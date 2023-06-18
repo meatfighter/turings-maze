@@ -4,12 +4,12 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
 
-public class SlowEmulator {
+public class Simulator {
 
     private static final String WORKSPACE_DIR = "workspace/";
     private static final String TESTS_DIR = WORKSPACE_DIR + "tests/";
     
-    private static final String SOURCE_FILE = TESTS_DIR + "test-inverter.png";
+    private static final String SOURCE_FILE = TESTS_DIR + "test-nand.png";
     private static final String DESTINATION_FILE = TESTS_DIR + "out.png";
        
     private void launch() throws Exception {
@@ -143,6 +143,6 @@ public class SlowEmulator {
     }
     
     public static void main(final String... args) throws Exception {
-        new SlowEmulator().launch();
+        new Simulator().launch();
     }
 }
