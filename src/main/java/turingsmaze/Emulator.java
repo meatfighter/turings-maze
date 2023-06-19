@@ -10,7 +10,7 @@ public class Emulator {
     private static final String WORKSPACE_DIR = "workspace/";
     private static final String TESTS_DIR = WORKSPACE_DIR + "tests/";
     
-    private static final String SOURCE_FILE = TESTS_DIR + "test-xor.png";
+    private static final String SOURCE_FILE = TESTS_DIR + "test-xnor.png";
     private static final String DESTINATION_FILE = TESTS_DIR + "out.png";    
 
     private void launch() throws Exception {
