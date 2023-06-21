@@ -1,3 +1,19 @@
+adder-subtractor column
+
+registers read/write to a common bus:
+
+clear
+read enable
+read disable
+write enable
+write disable
+
+reads
+writes
+
+
+
+
 ...
 .M.
 
