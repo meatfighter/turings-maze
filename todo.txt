@@ -1,15 +1,21 @@
 adder-subtractor column
 
+write A enable
+write A disable
+write B enable
+write B disable
+express enabled & express & express disable
+
+bus
+
+
 registers read/write to a common bus:
 
-clear
-read enable
-read disable
-write enable
-write disable
+1. write enable & reset
+2. write disable
+3. read enable & read & read disable
 
-reads
-writes
+bus
 
 
 
