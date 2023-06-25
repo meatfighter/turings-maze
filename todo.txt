@@ -1,4 +1,4 @@
-adder-subtractor column
+adder-subtractor
 
 1. configuration (0=add, 1=subtract)
 2. evaluate add/subtract to bus
@@ -6,16 +6,31 @@ adder-subtractor column
 4. write disable A
 5. write enable B
 6. write disable B
-7. 16-bit bus
+7. bus
 
-registers read/write to a common bus:
+registers
 
 1. write enable & reset
 2. write disable
 3. read
+4. bus
 
-bus
+multiplier
 
+1. write enable A
+2. write disable A
+3. write enable B
+4. write disable B
+5. evaluate
+6. bus
+
+22-bit data bus
+ 6-bit adder-subtractor bus
+ 3-bit i bus
+ 3-bit a bus
+ 3-bit p bus
+ 3-bit signed-right-shift-1 bus
+ 3-big left-shift-6 bus
 
 
 
