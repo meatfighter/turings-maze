@@ -1,19 +1,18 @@
 adder-subtractor column
 
-write A enable
-write A disable
-write B enable
-write B disable
-express enabled & express & express disable
-
-bus
-
+1. configuration (0=add, 1=subtract)
+2. evaluate add/subtract to bus
+3. write enable A
+4. write disable A
+5. write enable B
+6. write disable B
+7. 16-bit bus
 
 registers read/write to a common bus:
 
 1. write enable & reset
 2. write disable
-3. read enable & read & read disable
+3. read
 
 bus
 
