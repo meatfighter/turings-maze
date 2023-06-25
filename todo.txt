@@ -25,12 +25,17 @@ multiplier
 6. bus
 
 22-bit data bus
- 6-bit adder-subtractor bus
- 3-bit i bus
- 3-bit a bus
- 3-bit p bus
- 3-bit signed-right-shift-1 bus
  3-big left-shift-6 bus
+ 3-bit signed-right-shift-1 bus
+ 3-bit p bus 
+ 3-bit a bus
+ 3-bit i bus
+ 6-bit adder-subtractor bus
+ 
+ 
+ 
+ 
+
 
 
 
