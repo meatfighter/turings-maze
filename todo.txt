@@ -22,15 +22,30 @@ multiplier
 3. write enable B
 4. write disable B
 5. evaluate
-6. bus
+6. express 
 
 16-bit data bus
- 6-bit adder-subtractor bus
+ 6-bit adder-subtractor bus 
  3-bit left-shift-6 bus
  3-bit signed-right-shift-1 bus
- 3-bit p bus 
- 3-bit a bus
- 3-bit i bus
+ 3-bit right-shift-6 bus
+ 3-bit PH bus 
+ 3-bit PL bus 
+ 3-bit A bus
+ 3-bit I bus
+
+I = 0;
+PL = 0;
+PH = (B < 0) ? -B : B;
+
+while true
+  if (PL bit 1)
+    PH += A;
+  P >>= 1;
+  ++I;
+  
+P <<= 6;
+
  
  
  
