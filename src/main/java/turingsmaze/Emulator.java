@@ -10,7 +10,7 @@ public class Emulator {
     private static final String WORKSPACE_DIR = "workspace/";
     private static final String TESTS_DIR = WORKSPACE_DIR + "tests/";
     
-    private static final String SOURCE_FILE = TESTS_DIR + "test-adder-subtractor-16.png";
+    private static final String SOURCE_FILE = TESTS_DIR + "test-multiplier-16.png";
     private static final String DESTINATION_FILE = TESTS_DIR + "out.png";    
 
     private void launch() throws Exception {
@@ -20,6 +20,9 @@ public class Emulator {
         
         int direction = Direction.NORTH;
         Gate gate = gates[0];
+        
+//        int count = 0; // TODO REMOVE
+        
         while (true) {
             final Response response = responses[direction][gate.index];            
             final Gate[] reds = response.reds;
@@ -38,6 +41,10 @@ public class Emulator {
             if (gate.red) {
                 direction = (direction + 2) & 3;
             }
+            
+//            if (++count == 10_000_000) { // TODO REMOVE
+//                break; 
+//            }
         } 
 
         for (int i = gates.length - 1; i > 1; --i) {
