@@ -24,15 +24,15 @@ multiplier
 5. evaluate
 6. express 
 
- 3-bit data bus
- 6-bit adder-subtractor bus 
- 3-bit left-shift-6 bus
- 3-bit signed-right-shift-1 bus
- 3-bit right-shift-16 bus (PL = PH;)
- 3-bit PH bus 
- 3-bit PL bus 
- 3-bit A bus
- 3-bit I bus
+4-bit data bus (b_15, I_4, 0, PL_0)
+6-bit adder-subtractor bus 
+3-bit left-shift-6 bus
+3-bit signed-right-shift-1 bus
+3-bit right-shift-16 bus (PL = PH;)
+3-bit PH bus 
+3-bit PL bus 
+3-bit A bus
+3-bit I bus
 
 A = a;
 PH = b;
@@ -56,12 +56,49 @@ if b_15
   PH = -PH;
 
  
+mandelbrot
+
+write enable x0
+write disable x0
+write enable y0
+write disable y0
+evaluate
+express 
  
- 
- 
- 
+6-bit data bus (15, 14, 13, 12, I_6, I_0)
+6-bit multiplier bus
+6-bit adder-subtractor bus
+3-bit left-shift-1 bus
+3-bit S bus
+3-bit Y2 bus
+3-bit X2 bus
+3-bit Y bus
+3-bit X bus
+3-bit Y0 bus
+3-bit X0 bus 
+3-bit I bus
+
+X = x0;
+Y = y0;
+
+I = 0;
+
+while true
+  Y2 = Y * Y;
+  X2 = X * X;
+  S = 0b1111_0000_0000_0000 + X2 + Y2;  
+  if !S_15
+    break;
+  ++I;
+  if I_6
+    break;
+  Y = ((X * Y) << 1) + Y0;
+  X = X2 - Y2 + X0;
 
 
+1111 1101 1001 1010
+0000 0010 0100 0111
+9
 
 
 ...

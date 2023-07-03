@@ -10,7 +10,7 @@ public class Emulator {
     private static final String WORKSPACE_DIR = "workspace/";
     private static final String TESTS_DIR = WORKSPACE_DIR + "tests/";
     
-    private static final String SOURCE_FILE = TESTS_DIR + "test-multiplier-16.png";
+    private static final String SOURCE_FILE = TESTS_DIR + "test-mandelbrot-16.png";
     private static final String DESTINATION_FILE = TESTS_DIR + "out.png";    
 
     private void launch() throws Exception {
@@ -41,8 +41,8 @@ public class Emulator {
             if (gate.red) {
                 direction = (direction + 2) & 3;
             }
-            
-//            if (++count == 10_000_000) { // TODO REMOVE
+//            
+//            if (++count == 6_000_000) { // TODO REMOVE
 //                break; 
 //            }
         } 
