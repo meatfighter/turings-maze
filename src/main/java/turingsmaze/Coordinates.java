@@ -35,4 +35,9 @@ public final class Coordinates {
         }
         return this.y == other.y;
     }
+
+    @Override
+    public String toString() {
+        return String.format("(%d, %d)", x, y);
+    }
 }

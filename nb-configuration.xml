@@ -8,8 +8,9 @@ Without this configuration present, some functionality in the IDE may be limited
 -->
     <config-data xmlns="http://www.netbeans.org/ns/maven-config-data/1">
         <configurations>
-            <configuration id="simulator" profiles=""/>
             <configuration id="emulator" profiles=""/>
+            <configuration id="simulator" profiles=""/>
+            <configuration id="test multiplier" profiles=""/>
         </configurations>
     </config-data>
 </project-shared-configuration>
