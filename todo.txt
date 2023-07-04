@@ -46,7 +46,7 @@ PH = 0;
 while true
   if PL_0
     PH += A;
-  P >>= 1;
+  P >>>= 1;
   ++I;
   if I_4
     break;
