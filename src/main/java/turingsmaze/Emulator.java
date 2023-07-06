@@ -2,21 +2,24 @@ package turingsmaze;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Emulator {
     
     private static final String WORKSPACE_DIR = "workspace/";
     private static final String TESTS_DIR = WORKSPACE_DIR + "tests/";
     
-    private static final String SOURCE_FILE = TESTS_DIR + "test-mandelbrot-16.png";
+    private static final String SOURCE_FILE = TESTS_DIR + "test-pixel.png";
     private static final String DESTINATION_FILE = TESTS_DIR + "out.png";    
 
     private void launch() throws Exception {
         final Maze maze = new Maze(SOURCE_FILE);
         final Gate[] gates = findGates(maze);        
         final Response[][] responses = createResponseTable(maze, gates);
+ 
         
         int direction = Direction.NORTH;
         Gate gate = gates[0];
@@ -24,7 +27,7 @@ public class Emulator {
 //        int count = 0; // TODO REMOVE
         
         while (true) {
-            final Response response = responses[direction][gate.index];            
+            final Response response = responses[direction][gate.index];          
             final Gate[] reds = response.reds;
             for (int i = reds.length - 1; i >= 0; --i) {
                 reds[i].red = true;
@@ -41,8 +44,8 @@ public class Emulator {
             if (gate.red) {
                 direction = (direction + 2) & 3;
             }
-//            
-//            if (++count == 6_000_000) { // TODO REMOVE
+            
+//            if (++count == 60_000_000) { // TODO REMOVE
 //                break; 
 //            }
         } 
@@ -73,10 +76,17 @@ public class Emulator {
         final Mouse mouse = new Mouse(gate.coordinates.x, gate.coordinates.y, direction);
         final List<Gate> reds = new ArrayList<>();
         final List<Gate> greens = new ArrayList<>();
+        final Set<Mouse> mice = new HashSet<>();
         
-        while (true) {                      
+        while (true) {
             mouse.updateDirection(maze);
             mouse.step();
+            final Mouse m = new Mouse(mouse);
+            if (mice.contains(m)) {
+                break;
+            } else {
+                mice.add(m);
+            }
             if (mouse.getY() == 0) {
                 break;
             }

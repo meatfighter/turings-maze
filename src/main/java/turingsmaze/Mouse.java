@@ -15,6 +15,12 @@ public class Mouse {
         this.direction = direction;
     }
     
+    public Mouse(final Mouse mouse) {
+        x = mouse.getX();
+        y = mouse.getY();
+        direction = mouse.getDirection();
+    }
+    
     public Mouse(final Maze maze) {
 
         x = -1;
@@ -167,5 +173,35 @@ public class Mouse {
 
     public boolean isInMaze() {
         return y > 0;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 19 * hash + this.x;
+        hash = 19 * hash + this.y;
+        hash = 19 * hash + this.direction;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Mouse other = (Mouse) obj;
+        if (this.x != other.x) {
+            return false;
+        }
+        if (this.y != other.y) {
+            return false;
+        }
+        return this.direction == other.direction;
     }
 }
