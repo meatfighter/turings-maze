@@ -13,6 +13,7 @@ public class Display512Generator {
     
     private static final String DESTINATION_FILE = COMPONENTS_DIR + "display512.png";
 
+    private static final int LEFT_MARGIN = 8;
     private static final int DEMUX_INTERVAL = 4;
     private static final int DISPLAY_INTERVAL = 18;
     
@@ -22,8 +23,13 @@ public class Display512Generator {
         final Graphics2D g = image.createGraphics();
         g.setColor(new Color(turingsmaze.Color.GRAY));
         g.fillRect(0, 0, image.getWidth(), image.getHeight());
+        g.setColor(new Color(turingsmaze.Color.BLACK));
         
-        
+        for (int i = 0; i < 512; ++i) {
+            final int y = image.getHeight() - 1 - DEMUX_INTERVAL * i;
+            g.drawLine(0, y, LEFT_MARGIN + i * DISPLAY_INTERVAL, y);
+            g.drawLine(LEFT_MARGIN + i * DISPLAY_INTERVAL, y, LEFT_MARGIN + i * DISPLAY_INTERVAL, 0);
+        }        
         
         g.dispose();
         ImageIO.write(image, "png", new File(DESTINATION_FILE));
