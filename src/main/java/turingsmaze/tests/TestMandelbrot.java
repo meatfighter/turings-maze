@@ -1,4 +1,4 @@
-package turingsmaze;
+package turingsmaze.tests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,6 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import turingsmaze.Coordinates;
+import turingsmaze.Direction;
+import turingsmaze.Gate;
+import turingsmaze.Maze;
+import turingsmaze.Mouse;
+import turingsmaze.Response;
+import turingsmaze.Tile;
 
 public class TestMandelbrot {
     

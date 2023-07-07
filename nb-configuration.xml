@@ -11,8 +11,9 @@ Without this configuration present, some functionality in the IDE may be limited
             <configuration id="emulator" profiles=""/>
             <configuration id="simulator" profiles=""/>
             <configuration id="test adder subtractor" profiles=""/>
-            <configuration id="test multiplier" profiles=""/>
             <configuration id="test mandelbrot" profiles=""/>
+            <configuration id="test multiplier" profiles=""/>
+            <configuration id="test demux" profiles=""/>
         </configurations>
     </config-data>
 </project-shared-configuration>

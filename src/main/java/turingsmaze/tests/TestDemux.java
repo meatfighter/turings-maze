@@ -1,4 +1,4 @@
-package turingsmaze;
+package turingsmaze.tests;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -6,15 +6,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
+import turingsmaze.Coordinates;
+import turingsmaze.Direction;
+import turingsmaze.Gate;
+import turingsmaze.Maze;
+import turingsmaze.Mouse;
+import turingsmaze.Response;
+import turingsmaze.Tile;
 
-public class TestMultiplier {
+public class TestDemux {
     
     private static final String WORKSPACE_DIR = "workspace/";
     private static final String TESTS_DIR = WORKSPACE_DIR + "tests/";
     
-    private static final String SOURCE_FILE = TESTS_DIR + "test-multiplier-16.png";
-    
-    public static final int DECIMAL_PLACES = 10;
+    private static final String SOURCE_FILE = TESTS_DIR + "test-demux-512.png";
     
     private class Reg {
         
@@ -67,48 +72,35 @@ public class TestMultiplier {
         final Gate[] gates = findGates(maze);
         final Response[][] responses = createResponseTable(maze, gates);
         
-        final Gate[] xGates = extract(gates, 3, 1158);
-        final Gate[] yGates = extract(gates, 3, 1050); 
-        
-        final Reg i = extractRegister("  I", gates, 172, 928, 5);
-        final Reg a = extractRegister("  A", gates, 172, 794);
-        final Reg pl = extractRegister(" PL", gates, 172, 660);
-        final Reg ph = extractRegister(" PH", gates, 172, 526);
-        final Reg thl = extractRegister("THL", gates, 172, 392);
-        final Reg rs = extractRegister(" RS", gates, 172, 138, 32);
-        final Reg ls = extractRegister(" LS", gates, 172, 4);
-        final Reg[] regs = { i, a, pl, ph, thl, rs, ls };  
-        
-//        System.out.format("Expected value: %d%n", multiplyAndPrint(61825, 47090));
-        
-//        storeValue(new Gate[][] { xGates, null }, 61825);
-//        storeValue(new Gate[][] { yGates, null }, 47090);
-//        emulate(gates, responses, regs);        
-          
-        final Random random = ThreadLocalRandom.current();
-        
-        while (true) {
-            final int x = random.nextInt(0x10000);
-            final int y = random.nextInt(0x10000);            
-            final int expectedValue = multiply(x, y);
+        final Gate[] addressGates = extract(gates, 3, 2417, 9);
+        final Gate[] outputGates = extract(gates, 92, 3, 512);
 
-            storeValue(new Gate[][] { xGates, null }, x);
-            storeValue(new Gate[][] { yGates, null }, y);
-            emulate(gates, responses, new Reg[0]);
-            final int actualValue = loadValue(ph.gates);
-
-            if (expectedValue != actualValue) {
-                System.out.format("%d * %d = %d, %d%n", x, y, expectedValue, actualValue);
-                //return;
-            } else {
-                System.out.println("match");
+        for (int i = 0; i < 512; ++i) {            
+            storeValue(new Gate[][] { addressGates, null }, i);
+            emulate(gates, responses, new Reg[0], maze);
+            
+            int count = 0;
+            for (int j = 0; j < 512; ++j) {
+                final Gate gate = outputGates[j];                
+                if (!gate.red) {
+                    System.out.println(j);
+                    if (i != (511 - j)) {
+                        System.out.println("Mismatch: " + i + " " + j);
+                    }
+                    gate.red = true;
+                    ++count;
+                }
+            }
+            if (count != 1) {
+                System.out.println("Fail: " + i + " " + count);
+                break;
             }
         }
-
-//        System.out.println(multiply(1, 32768));
     }
     
-    private void emulate(final Gate[] gates, final Response[][] responses, final Reg[] regs) {
+    private void emulate(final Gate[] gates, final Response[][] responses, final Reg[] regs, final Maze maze) 
+            throws Exception {
+        
         int direction = Direction.NORTH;
         Gate gate = gates[0];
         
@@ -265,153 +257,7 @@ public class TestMultiplier {
         return gates.toArray(new Gate[0]);
     }
     
-    public int add(final int a, final int b) {
-        return 0xFFFF & ((0xFFFF & a) + (0xFFFF & b));
-    }
-    
-    public int subtract(final int a, final int b) {
-        return 0xFFFF & ((0xFFFF & a) - (0xFFFF & b));
-    }
-    
-    public int negate(final int a) {
-        return subtract(0, (0xFFFF & a));
-    }
-    
-    public int leftShift(final int a) {
-        return 0xFFFF & ((0xFFFF & a) << 1);
-    }
-    
-    public int multiply(final int a, final int b) {
-        
-        int A = a;
-        int PH = b;
-        final boolean b15 = ((b >> 15) & 1) == 1;
-        
-        if (b15) {
-            PH = negate(PH);
-        }
-        int PL = PH;
-        int I = 0;
-        PH = 0;
-        
-        while (true) {
-            if ((PL & 1) == 1) {
-                PH = add(PH, A);
-            }
-            
-            long P = (PH << 16) | PL;
-            P &= 0xFFFFFFFF;
-            P >>>= 1;
-            PH = (int) (0xFFFF & (P >>> 16));
-            PL = (int) (0xFFFF & P);
-            
-            ++I;
-            if (((I >> 4) & 1) == 1) {
-                break;
-            }
-        }
-        
-        long P = (PH << 16) | PL;
-        P <<= 6;
-        PH = (int) (0xFFFF & (P >>> 16));
-        
-        if (b15) {
-            PH = negate(PH);
-        }
-        
-        return PH;
-    }
-    
-    public int multiplyAndPrint(final int a, final int b) {
-        
-        int A = a;
-        printValue("  A", A);
-        int PH = b;
-        printValue(" PH", PH);
-        final boolean b15 = ((b >> 15) & 1) == 1;
-        
-        if (b15) {
-            PH = negate(PH);
-            printValue(" PH", PH);
-        }
-        int PL = PH;
-        printValue(" PL", PL);
-        int I = 0;
-        printValue("  I", I);
-        PH = 0;
-        printValue(" PH", PH);
-        
-        while (true) {
-            if ((PL & 1) == 1) {
-                PH = add(PH, A);
-                printValue(" PH", PH);
-            }
-            
-            long P = (PH << 16) | PL;
-            printValue(" RS", (int) P, 32);
-            P >>= 1;            
-            PH = (int) (0xFFFF & (P >>> 16));
-            printValue(" PH", PH);
-            PL = (int) (0xFFFF & P);
-            printValue(" PL", PL);
-            
-            ++I;
-            printValue("  I", I);
-            if (((I >> 4) & 1) == 1) {
-                break;
-            }
-        }
-        
-        long P = (PH << 16) | PL;
-        P <<= 6;
-        PH = (int) (0xFFFF & (P >>> 16));
-        printValue(" PH", PH);
-        
-        if (b15) {
-            PH = negate(PH);
-            printValue(" PH", PH);
-        }
-        
-        return PH;
-    }    
-    
-    public int multiplyOld(final int a, final int b) {
-        
-        long p = 0; // p represents 32-bit register (but we only need the top 22-bits)
-        int i = 0;
-        
-        if (((b >> 15) & 1) == 1) { // test bit 15
-            p = negate(b);
-        } else {
-            p = b;
-        }
-              
-        while (true) {
-            
-            if ((p & 1) == 1) {                
-                p = (add((int) (p >>> 16), a) << 16) | (p & 0xFFFF); // add upper 16 bits of p with a
-            }
-            
-            p >>= 1; // signed right shift by 1
-            
-            ++i;
-            
-            if (((i >> 4) & 1) == 1) { // test bit 4
-                break;
-            }            
-        }  
-        
-        p = 0xFFFFFFFF & (p << (16 - DECIMAL_PLACES));
-        final int r = (int) (0xFFFF & (p >> 16));        
-        
-        if (((b >> 15) & 1) == 1) { // test bit 15
-            return negate(r);
-        } 
-        
-        return r;
-    }    
-    
     public static void main(final String... args) throws Exception {
-        new TestMultiplier().launch();
+        new TestDemux().launch();
     }
 }
