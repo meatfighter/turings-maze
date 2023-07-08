@@ -16,9 +16,13 @@ public class Emulator {
     private static final String DESTINATION_FILE = TESTS_DIR + "out.png";    
 
     private void launch() throws Exception {
+        System.out.println("--1");
         final Maze maze = new Maze(SOURCE_FILE);
+        System.out.println("--2");
         final Gate[] gates = findGates(maze);        
+        System.out.println("--3");
         final Response[][] responses = createResponseTable(maze, gates);
+        System.out.println("--4");
  
         
         int direction = Direction.NORTH;
@@ -63,11 +67,32 @@ public class Emulator {
         final Map<Coordinates, Gate> gatesMap = createGatesMap(gates);
         final Response[][] responses = new Response[4][gates.length];
         for (int direction = 3; direction >= 0; --direction) {
-            for (int index = gates.length - 1; index >= 0; --index) {
-                responses[direction][index] = createResponse(maze, gatesMap, direction, gates[index]);
+            System.out.println("direction: " + direction); // TODO REMOVE
+            final Thread[] threads = new Thread[Runtime.getRuntime().availableProcessors()];
+            final int length = gates.length / threads.length;
+            for (int i = threads.length - 1, index = gates.length - 1; i >= 0; --i, index -= length) {
+                final int d = direction;
+                final int startIndex = (i == 0) ? 0 : index - length;
+                final int endIndex = index;
+                threads[i] = new Thread(() -> createResponses(d, startIndex, endIndex, responses, maze, gatesMap, 
+                        gates));
+                threads[i].start();
+            }
+            for (final Thread thread : threads) {
+                try {
+                    thread.join();
+                } catch (final InterruptedException ignored) {                    
+                }
             }
         }
         return responses;
+    }
+    
+    private void createResponses(final int direction, final int startIndex, final int endIndex, 
+            final Response[][] responses, final Maze maze, final Map<Coordinates, Gate> gatesMap, final Gate[] gates) {        
+        for (int index = startIndex; index < endIndex; ++index) {                
+            responses[direction][index] = createResponse(maze, gatesMap, direction, gates[index]);
+        }
     }
     
     private Response createResponse(final Maze maze, final Map<Coordinates, Gate> gatesMap, final int direction, 
