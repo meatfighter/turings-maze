@@ -99,9 +99,17 @@ while true
   X = X2 - Y2 + X0;
 
 
-1111 1101 1001 1010
-0000 0010 0100 0111
-9
+display
+
+9-bit data bus
+write enable x
+write disable x
+write enable y
+write disable y
+write enable color
+write disable color
+reset
+
 
 
 ...

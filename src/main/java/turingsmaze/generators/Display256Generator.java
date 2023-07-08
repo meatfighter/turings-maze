@@ -25,8 +25,7 @@ public class Display256Generator {
         g.fillRect(0, 0, image.getWidth(), image.getHeight());
         g.setColor(new Color(turingsmaze.Color.BLACK));
         
-        final int y = image.getHeight() - 1 
-                - ((512 * DISPLAY_INTERVAL - 256 * DEMUX_INTERVAL) / 2 - 128 * DEMUX_INTERVAL);
+        final int y = image.getHeight() - 1 - ((512 * DISPLAY_INTERVAL) / 2) - DISPLAY_INTERVAL / 2;
         
         for (int i = 0; i < 256; ++i) {
             g.drawLine(MARGIN + 2 * i, 0, MARGIN + 2 * i, image.getHeight() - 1);
