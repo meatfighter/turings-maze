@@ -12,7 +12,7 @@ public class Emulator {
     private static final String WORKSPACE_DIR = "workspace/";
     private static final String TESTS_DIR = WORKSPACE_DIR + "tests/";
     
-    private static final String SOURCE_FILE = TESTS_DIR + "test-display.png";
+    private static final String SOURCE_FILE = TESTS_DIR + "test-main.png";
     private static final String DESTINATION_FILE = TESTS_DIR + "out.png";    
 
     private void launch() throws Exception {
@@ -30,6 +30,7 @@ public class Emulator {
         
 //        int count = 0; // TODO REMOVE
         
+        final long startTime = System.currentTimeMillis();
         while (true) {
             final Response response = responses[direction][gate.index];          
             final Gate[] reds = response.reds;
@@ -52,7 +53,9 @@ public class Emulator {
 //            if (++count == 60_000_000) { // TODO REMOVE
 //                break; 
 //            }
-        } 
+        }
+        final long endTime = System.currentTimeMillis();
+        System.out.println(endTime - startTime);
 
         for (int i = gates.length - 1; i > 1; --i) {
             gate = gates[i];

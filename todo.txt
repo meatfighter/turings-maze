@@ -119,8 +119,8 @@ main
 7-bit display bus
 3-bit Y bus
 3-bit X bus
-3-bit J bus
 3-bit I bus
+3-bit J bus
 
 ...
 .M.
