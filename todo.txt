@@ -111,6 +111,16 @@ write disable color
 reset
 
 
+main
+
+16-bit data bus
+6-bit mandelbrot bus
+6-bit adder-subtractor bus
+7-bit display bus
+3-bit Y bus
+3-bit X bus
+3-bit J bus
+3-bit I bus
 
 ...
 .M.
