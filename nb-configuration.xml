@@ -8,6 +8,7 @@ Without this configuration present, some functionality in the IDE may be limited
 -->
     <config-data xmlns="http://www.netbeans.org/ns/maven-config-data/1">
         <configurations>
+            <configuration id="display 256 generator" profiles=""/>
             <configuration id="display 512 generator" profiles=""/>
             <configuration id="emulator" profiles=""/>
             <configuration id="simulator" profiles=""/>
@@ -15,7 +16,7 @@ Without this configuration present, some functionality in the IDE may be limited
             <configuration id="test demux" profiles=""/>
             <configuration id="test mandelbrot" profiles=""/>
             <configuration id="test multiplier" profiles=""/>
-            <configuration id="display 256 generator" profiles=""/>
+            <configuration id="test main" profiles=""/>
         </configurations>
     </config-data>
 </project-shared-configuration>
