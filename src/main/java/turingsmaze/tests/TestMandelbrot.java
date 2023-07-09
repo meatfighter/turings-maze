@@ -97,27 +97,37 @@ public class TestMandelbrot {
 //        storeValue(new Gate[][] { xGates, null }, X);
 //        storeValue(new Gate[][] { yGates, null }, Y);
 //        emulate(gates, responses, regs, maze);        
-          
-        final Random random = ThreadLocalRandom.current();
-        
-        while (true) {
-            final int X = random.nextInt(0x10000);
-            final int Y = random.nextInt(0x10000);            
-            final int expectedValue = eval(X, Y);
-
-            storeValue(new Gate[][] { xGates, null }, X);
-            storeValue(new Gate[][] { yGates, null }, Y);
+  
+        final long startTime = System.nanoTime();
+        for (int w = 0; w < 512; ++w) {
+            storeValue(new Gate[][] { xGates, null }, 0);
+            storeValue(new Gate[][] { yGates, null }, 0);
             emulate(gates, responses, new Reg[0], maze);
-            final int actualValue = loadValue(i.gates);
-
-            if (expectedValue != actualValue) {
-                System.out.format("eval(%d, %d) = %d, %d%n", X, Y, expectedValue, actualValue);
-                //return;
-            } else {
-                System.out.println("match");
-                System.out.format("eval(%d, %d) = %d, %d%n", X, Y, expectedValue, actualValue);
-            }
         }
+        final long endTime = System.nanoTime();
+        System.out.println((endTime - startTime) / 1.0E9);
+
+
+//        final Random random = ThreadLocalRandom.current();
+//        
+//        while (true) {
+//            final int X = random.nextInt(0x10000);
+//            final int Y = random.nextInt(0x10000);            
+//            final int expectedValue = eval(X, Y);
+//
+//            storeValue(new Gate[][] { xGates, null }, X);
+//            storeValue(new Gate[][] { yGates, null }, Y);
+//            emulate(gates, responses, new Reg[0], maze);
+//            final int actualValue = loadValue(i.gates);
+//
+//            if (expectedValue != actualValue) {
+//                System.out.format("eval(%d, %d) = %d, %d%n", X, Y, expectedValue, actualValue);
+//                //return;
+//            } else {
+//                System.out.println("match");
+//                System.out.format("eval(%d, %d) = %d, %d%n", X, Y, expectedValue, actualValue);
+//            }
+//        }
 
 //        System.out.println(multiply(1, 32768));
     }

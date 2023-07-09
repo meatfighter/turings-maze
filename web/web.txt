@@ -1,0 +1,31 @@
+Turing’s Maze 
+
+Abstract 
+
+Turing’s Maze is a discrete-event simulation of a mouse on a two-dimensional square lattice of black, gray, red, and green cells. As the mouse interacts with cells per a very simple set of rules, behaviors emerge particularly suited for emulating Boolean circuits. Consequentially, it is possible to implement any computer algorithm as a maze traversed by the mouse.  
+
+This article describes the rules of Turing’s Maze. It explains how to build gates, combinational logic, and sequential logic. And it demonstrates the mouse’s ability to compute with an implementation of the Mandelbrot algorithm. 
+
+Rules 
+
+Each simulation state consists of the mouse on a cell, facing a cardinal direction (north, east, south, or west). Per the rules described below, the mouse’s direction and the color of the cell it is on may change. Then it steps in its direction to an adjacent cell, transitioning the simulation to the next state. 
+
+The mouse can move onto cells of any color except for gray, which act as the walls of the maze. Passages primarily consist of black cells. 
+
+The mouse enters a maze from the south edge. Its goal is to reach the north edge.  
+
+[ pic ] 
+
+The mouse traverses the maze by following the right-hand rule. That is, from the start, it keeps its right hand (or paw) in contact with the wall to its right, and it follows the wall around corners as it advances. However, if it encounters a four-way intersection, it plows straight through.   
+
+[ pic ] 
+
+ 
+
+ 
+
+Reversible Turing’s Maze 
+
+Universal Computation 
+
+ 
