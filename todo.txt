@@ -122,6 +122,25 @@ main
 3-bit I bus
 3-bit J bus
 
+Y = 0b1111_1011_0000_0000;
+I = 0;
+
+while true
+  X = 0b1111_1000_0000_0000;
+  J = 0;
+  while true
+    display(J, I, eval(X, Y));
+    J = add(1, J);
+    if J_9
+      break;
+    X = add(5, X);
+  I = add(1, I);
+  if I_8
+    break;
+  Y = add(5, Y);
+
+      
+
 ...
 .M.
 
