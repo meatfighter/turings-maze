@@ -102,10 +102,10 @@ while true
 display
 
 9-bit data bus
-write enable x
-write disable x
 write enable y
 write disable y
+write enable x
+write disable x
 write enable color
 write disable color
 reset
