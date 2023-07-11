@@ -164,3 +164,30 @@ XM.
 
 .X.
 XMX
+
+
+
+if tile = red then
+    if direction = north then
+        tile <- green
+    end
+    direction <- reverse(direction)
+elseif tile = green then
+    if direction = north then
+        direction <- south
+    elseif direction = south then
+        direction <- north
+        tile <- red
+    end
+end
+
+000  
+001
+010 turn 90o clockwise
+011 turn 90o counterclockwise
+100 turn 90o clockwise
+101
+110 turn 90o clockwise
+111 reverse direction
+
+
