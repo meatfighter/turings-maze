@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Set;
 import turingsmaze.Coordinates;
 import turingsmaze.Direction;
-import turingsmaze.Gate;
+import turingsmaze.Switch;
 import turingsmaze.Maze;
 import turingsmaze.Mouse;
 import turingsmaze.Response;
@@ -29,12 +29,12 @@ public class TestMain {
             this.name = name;
         }
         
-        Gate[][] gates;
+        Switch[][] gates;
         boolean lastAllWritesDisabled = true;
         
         boolean isUpdated() {
             boolean allWritesDisabled = true;
-            for (final Gate gate : gates[1]) {
+            for (final Switch gate : gates[1]) {
                 if (!gate.red) {
                     allWritesDisabled = false;
                     break;
@@ -69,7 +69,7 @@ public class TestMain {
 
     private void launch() throws Exception {
         final Maze maze = new Maze(SOURCE_FILE);
-        final Gate[] gates = findGates(maze);
+        final Switch[] gates = findGates(maze);
         final Response[][] responses = createResponseTable(maze, gates);
         
         final Reg j = extractRegister("J", gates, 142, 12370, 10);
@@ -109,11 +109,11 @@ public class TestMain {
 //        System.out.println(multiply(1, 32768));
     }
     
-    private void emulate(final Gate[] gates, final Response[][] responses, final Reg[] regs, final Maze maze) 
+    private void emulate(final Switch[] gates, final Response[][] responses, final Reg[] regs, final Maze maze) 
             throws Exception {
         
         int direction = Direction.NORTH;
-        Gate gate = gates[0];
+        Switch gate = gates[0];
         
         while (true) {
             for (final Reg reg : regs) {
@@ -123,11 +123,11 @@ public class TestMain {
             }            
             
             final Response response = responses[direction][gate.index];            
-            final Gate[] reds = response.reds;
+            final Switch[] reds = response.reds;
             for (int i = reds.length - 1; i >= 0; --i) {
                 reds[i].red = true;
             }
-            final Gate[] greens = response.greens;
+            final Switch[] greens = response.greens;
             for (int i = greens.length - 1; i >= 0; --i) {
                 greens[i].red = false;
             }
@@ -142,7 +142,7 @@ public class TestMain {
         }
     }
     
-    private int loadValue(final Gate[][] register) {
+    private int loadValue(final Switch[][] register) {
         int value = 0;
         for (int i = 0; i < register[0].length; ++i) {
             value <<= 1;
@@ -151,43 +151,43 @@ public class TestMain {
         return value;
     }
     
-    private void storeValue(final Gate[][] register, final int value) {
+    private void storeValue(final Switch[][] register, final int value) {
         for (int i = register[0].length - 1, v = value; i >= 0; --i, v >>= 1) {
             register[0][i].red = (v & 1) == 0;            
         }
     }
     
-    private Reg extractRegister(final String name, final Gate[] gates, final int x, final int minY) {
+    private Reg extractRegister(final String name, final Switch[] gates, final int x, final int minY) {
         return extractRegister(name, gates, x, minY, 16);
     }
     
-    private Reg extractRegister(final String name, final Gate[] gates, final int x, final int minY, final int length) {
+    private Reg extractRegister(final String name, final Switch[] gates, final int x, final int minY, final int length) {
         final Reg reg = new Reg(name);
-        reg.gates = new Gate[][] {
+        reg.gates = new Switch[][] {
             extract(gates, x, minY, length),
             extract(gates, x + 2, minY + 4, length),
         };
         return reg;
     }
     
-    private Gate[] extract(final Gate[] gates, final int x, final int minY) {
+    private Switch[] extract(final Switch[] gates, final int x, final int minY) {
         return extract(gates, x, minY, 16);
     }
     
-    private Gate[] extract(final Gate[] gates, final int x, final int minY, final int length) {
-        final List<Gate> gs = new ArrayList<>();
-        for (final Gate gate : gates) {
+    private Switch[] extract(final Switch[] gates, final int x, final int minY, final int length) {
+        final List<Switch> gs = new ArrayList<>();
+        for (final Switch gate : gates) {
             if (gate.coordinates.x == x && gate.coordinates.y >= minY) {
                 gs.add(gate);
             }
         }
         gs.sort((a, b) -> Integer.compare(a.coordinates.y, b.coordinates.y));
-        return gs.subList(0, length).toArray(new Gate[0]);
+        return gs.subList(0, length).toArray(new Switch[0]);
     }
     
-    private Response[][] createResponseTable(final Maze maze, final Gate[] gates) {
+    private Response[][] createResponseTable(final Maze maze, final Switch[] gates) {
         
-        final Map<Coordinates, Gate> gatesMap = createGatesMap(gates);
+        final Map<Coordinates, Switch> gatesMap = createGatesMap(gates);
         final Response[][] responses = new Response[4][gates.length];
         for (int direction = 3; direction >= 0; --direction) {
             System.out.println("direction: " + direction); // TODO REMOVE
@@ -212,18 +212,18 @@ public class TestMain {
     }
     
     private void createResponses(final int direction, final int startIndex, final int endIndex, 
-            final Response[][] responses, final Maze maze, final Map<Coordinates, Gate> gatesMap, final Gate[] gates) {        
+            final Response[][] responses, final Maze maze, final Map<Coordinates, Switch> gatesMap, final Switch[] gates) {        
         for (int index = startIndex; index < endIndex; ++index) {                
             responses[direction][index] = createResponse(maze, gatesMap, direction, gates[index]);
         }
     }
     
-    private Response createResponse(final Maze maze, final Map<Coordinates, Gate> gatesMap, final int direction, 
-            final Gate gate) {
+    private Response createResponse(final Maze maze, final Map<Coordinates, Switch> gatesMap, final int direction, 
+            final Switch gate) {
         
         final Mouse mouse = new Mouse(gate.coordinates.x, gate.coordinates.y, direction);
-        final List<Gate> reds = new ArrayList<>();
-        final List<Gate> greens = new ArrayList<>();
+        final List<Switch> reds = new ArrayList<>();
+        final List<Switch> greens = new ArrayList<>();
         final Set<Mouse> mice = new HashSet<>();
         
         while (true) {
@@ -253,30 +253,30 @@ public class TestMain {
             }            
         }
         
-        return new Response(reds.toArray(new Gate[0]), greens.toArray(new Gate[0]), 
+        return new Response(reds.toArray(new Switch[0]), greens.toArray(new Switch[0]), 
                 gatesMap.get(new Coordinates(mouse.getX(), mouse.getY())), mouse.getDirection());
     }
     
-    private Map<Coordinates, Gate> createGatesMap(final Gate[] gates) {
-        final Map<Coordinates, Gate> gatesMap = new HashMap<>();
-        for (final Gate gate : gates) {
+    private Map<Coordinates, Switch> createGatesMap(final Switch[] gates) {
+        final Map<Coordinates, Switch> gatesMap = new HashMap<>();
+        for (final Switch gate : gates) {
             gatesMap.put(gate.coordinates, gate);
         }
         return gatesMap;
     }
     
-    private Gate[] findGates(final Maze maze) {
-        final List<Gate> gates = new ArrayList<>();
+    private Switch[] findGates(final Maze maze) {
+        final List<Switch> gates = new ArrayList<>();
         
         for (int x = maze.getWidth() - 1, y = maze.getHeight() - 1; x >= 0; --x) {
             if (maze.getTile(x, y) == Tile.BLACK) {
-                gates.add(new Gate(0, new Coordinates(x, y), false));
+                gates.add(new Switch(0, new Coordinates(x, y), false));
                 break;
             }
         }
         for (int x = maze.getWidth() - 1; x >= 0; --x) {
             if (maze.getTile(x, 0) == Tile.BLACK) {
-                gates.add(new Gate(1, new Coordinates(x, 0), false));
+                gates.add(new Switch(1, new Coordinates(x, 0), false));
                 break;
             }
         }
@@ -284,16 +284,16 @@ public class TestMain {
             for (int x = maze.getWidth() - 1; x >= 0; --x) {
                 switch (maze.getTile(x, y)) {
                     case Tile.RED:
-                        gates.add(new Gate(index++, new Coordinates(x, y), true));
+                        gates.add(new Switch(index++, new Coordinates(x, y), true));
                         break;
                     case Tile.GREEN:
-                        gates.add(new Gate(index++, new Coordinates(x, y), false));
+                        gates.add(new Switch(index++, new Coordinates(x, y), false));
                         break;
                 }                
             }
         }        
         
-        return gates.toArray(new Gate[0]);
+        return gates.toArray(new Switch[0]);
     }
     
     public static void main(final String... args) throws Exception {

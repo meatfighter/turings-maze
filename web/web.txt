@@ -4,7 +4,7 @@ Abstract
 
 Turing’s Maze is a discrete-event simulation of a mouse on a two-dimensional square lattice of black, gray, red, and green cells. As the mouse interacts with cells per a very simple set of rules, behaviors emerge particularly suited for emulating Boolean circuits. Consequently, it is possible to implement any algorithm as a maze traversed by the mouse.  
 
-This article describes the rules of Turing’s Maze. It explains how to build gates, combinational logic, and sequential logic. And it demonstrates the mouse’s ability to compute with an implementation of the Mandelbrot algorithm. 
+This article describes the rules of Turing’s Maze. It explains how to build gates, combinational logic, and sequential logic. And it demonstrates the mouse’s ability to compute with an implementation of the Mandelbrot set algorithm. 
 
 Description 
 
@@ -40,21 +40,117 @@ Formal Definition
 
 The simulator repeatedly performs the following three steps until the mouse exits the maze. 
 
-The simulator potentially changes the color of the tile the mouse is situated on and the mouse’s direction per the following pseudocode. 
+The simulator potentially changes the current tile color and the mouse’s direction per the following pseudocode. 
 
 [ pseudocode ] 
 
-The simulator inspects the tiles immediately left of the mouse, in front of the mouse, and right of the mouse. It uses the table below, where 1 indicates a wall (a gray tile) and 0 indicates a passage (a nongray tile), to potentially change the mouse’s direction to remain consistent with the right-hand rule modified to ignore four-way intersections. 
+The simulator inspects the tiles immediately left, in front of, and right of the mouse. It uses the table below, where 1 indicates a wall (a gray tile) and 0 indicates a passage (a nongray tile), to potentially change the mouse’s direction to remain consistent with the right-hand rule modified to ignore four-way intersections. 
 
 [ table ] 
 
 The simulator moves the mouse in its direction to an adjacent tile.  
 
+Circuits 
+
+In the circuits described below, the mouse propagates logic one as it travels. Paths made of black tiles, separated by gray tiles, direct the mouse between components. They function as signal channels analogous to the wires of an electronic circuit. Four-way intersections act as non-connecting, crossing wires because the mouse disregards the right-hand rule when it encounters them. 
+
+Red and green tiles operate as switching elements. Red represents a switch turned off, a disconnected channel that denies east-west signal propagation. And green represents a switch turned on, a connected channel that permits east-way signal propagation.  
+
+The mouse turns a switch off by southwardly stepping onto a green tile. And it turns a switch on by northwardly stepping onto a red tile. 
+
+Since a switch retains its state after the mouse steps away, red and green tiles also serve as data storage elements. In the circuits described below, red represents a stored logic zero and green represents a stored logic one.  
+
+Note: It is possible to build inverted circuits, where the mouse propagates logic zero, or dual-rail circuits, where the mouse propagates logic zero or logic one depending on which of two paths the mouse takes. 
+
 Logic Gates 
 
-The black tiles of the maze’s passages function as information channels, analogous to wires of an electronic circuit. Four-way intersections work like non-connecting, crossing wires because the mouse disregards the right-hand rule when it encounters them. 
+Unlike traditional logic gates, logic gates implemented in Turing’s maze store input Boolean values. The values are all initialized to logic zero. When the mouse visits an input terminal--where “visit” means it enters and it subsequentially returns from the terminal--it toggles the stored value corresponding to the input terminal to logic one. After setting the inputs in this way, the mouse enters an express-and-reset terminal, which evaluates the logical operation for the stored inputs. If the result is logic one, the mouse visits the output terminal, expressing the result to whatever is wired to the gate. Afterwards, the mouse resets the stored values to logic zeros, and it returns from the express-and-reset terminal. 
 
-Red and green tiles operate as both information storage elements and switching elements. Red represents logic zero and a non-conducting pathway. Green represents logic one and a conducting pathway. The mouse propagates information to red and green tiles by moving north or south on to them and potentially changing their colors. In turn, their colors permit or deny the mouse eastward and westward passage. 
+To make this clear, the image below depicts an AND gate with the input terminals, the output terminal, and the express-and-reset terminal labeled.  
+
+[ pic ] 
+
+The red tiles store the input values. When the mouse visits an input terminal, it switches a red tile to a green tile. When the mouse enters the express-and-reset terminal, it visits the output terminal only if the mouse switched both red tiles to green. Then it flips any green tiles back to red. And it returns from the express-and-reset terminal.    
+
+The following animated examples depict logic gates attached to test harnesses of the form: 
+
+[ pic ] 
+
+Each harness uses red and green tiles to control which input terminals the mouse visits, and a red tile to capture the result of the logical operation for the given input values. 
+
+[ gates ] 
+
+The XOR gate demonstrates combinational logic. It consists of a NAND gate and an OR gate whose outputs feed into an AND gate. The XOR’s express-and-reset terminal directs the mouse to the NAND and OR gate’s express-and-reset terminals prior to the AND’s express-and-reset terminal. This ensures the logical operations are performed in the correct sequence. 
+
+Like XOR, XNOR demonstrates combinational logic. It consists of a NOR gate and an AND gate whose outputs feed into an OR gate. As with XOR, XNOR’s express-and-reset terminal directs the mouse to evaluate the logical operations in the proper order. 
+
+[ demux explained ] 
+
+Software 
+
+This project includes a simulator and an emulator written in Java. The simulator loads an image of a Turing’s maze, where each pixel represents a tile with these colors: 
+
+[ color table ] 
+
+It runs the mouse from the entrance to the exit, and it saves an image of the final maze state.  
+
+The emulator does the same, but it executes much faster. Before it runs the mouse from the entrance to the exit, it positions the mouse on each red and green tile, and it orients the mouse in each cardinal direction. For each of those starting configurations, it runs a simulation that obtains a list of tiles the mouse turns red and a list of the tiles the mouse turns green until the mouse arrives at a red or green tile facing east or west. During each emulation cycle, it uses that precomputed table to jump the mouse from a source a red or green tile, while facing east or west, to a destination red or green tile, again facing east or west, while performing the expected tile color changes. If the mouse lands on a red tile, the emulator reverses its direction. 
+
+To download the source code and the compiled binary, clone this repository. 
+
+To run the simulator, navigate to the local repository directory, and execute the following command. 
+
+[ simulator command ] 
+
+To run the emulator, navigate to the local repository directory, and execute the following command. 
+
+[ emulator command ] 
+
+Mandelbrot Set 
+
+The emulator performs this transformation: 
+
+[ pic -> pic ] 
+
+Click either image to view the full-resolution versions (10,149 x 12,540 pixels).  
+
+The Mandelbrot set manifests on a 512x512 cell matrix. The image below depicts a 4x4 region. 
+
+[ pic ] 
+
+Each cell primarily consists of red tiles wired together to function as a large indicator. The AND gate in the lower-left corner of each cell drives the indicator. Each AND gate’s inputs are connected to row and column lines. And the express-and-reset terminals of all the AND gates are joined together. 
+
+To turn a cell green, the mouse visits a row line, a column line, and the collective express-and-reset lines. Only the AND gate at the intersection of the row and column lines permits the mouse to reach an indicator.    
+
+Demultiplexers drive the row and column lines: 
+
+[ pic ] 
+
+The maze takes advantage of the Mandelbrot set’s horizontal symmetry: it only computes the upper half. The row demultiplexer mirrors the computed region into the lower half. 
+
+The row and column demultiplexers share a 9-bit bus. Red tiles, acting as transmission gates, establish or break the connection between a demultiplexer and the bus: 
+
+[ pic ] 
+
+From left to right, the control lines are: 
+
+Connect row demultiplexer address lines to the bus 
+
+Disconnect row demultiplexer address lines from the bus 
+
+Connect column demultiplexer address lines to the bus 
+
+Disconnect column demultiplexer address lines from the bus 
+
+Connect common row and column demultiplexers data line to the bus 
+
+Disconnect common row and column demultiplexers data line from the bus 
+
+Express the AND gates, and reset the AND gates and demultiplexers 
+
+The address lines configure the demultiplexers, establishing a pathway from the common data line (bit-0 of the bus) to the row and column lines.  
+
+ 
 
  
 
