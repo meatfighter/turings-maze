@@ -84,7 +84,29 @@ The XOR gate demonstrates combinational logic. It consists of a NAND gate and an
 
 Like XOR, XNOR demonstrates combinational logic. It consists of a NOR gate and an AND gate whose outputs feed into an OR gate. As with XOR, XNOR’s express-and-reset terminal directs the mouse to evaluate the logical operations in the proper order. 
 
-[ demux explained ] 
+A single red or green tile can function as a transmission gate: 
+
+[ pic ] 
+
+The image below depicts part of the circuit that computes the Mandelbrot set. It shows stacks of transmission gates with common control lines that connect or disconnect devices to a 9-bit bus. 
+
+[ pic ] 
+
+A 1-to-2 demultiplexer steers the mouse from a data input terminal to one of two output terminals: 
+
+[ pic ] 
+
+Here are test harnesses exercising all possible input values: 
+
+[ pic ] 
+
+The Mandelbrot set circuit employs a 1-to-256 demultiplexer and a 1-to-512 demultiplexer constructed from a copious amount of 1-to-2 demultiplexers organized into binary trees. 
+
+Sequential Logic 
+
+ 
+
+ 
 
 Software 
 
@@ -154,15 +176,23 @@ The address lines configure the demultiplexers, establishing a pathway from the 
 
  
 
- 
+Universal Computation 
 
-Variations 
+A medium is Turing-complete if it can compute every Turing-computable function. Or, put another way, if it can replicate the functionality of all Turing machines. This section considers if Turing’s maze is such a medium. 
 
-Different rules 
+When a Turing machine runs, it allocates a finite amount of tape. But it is not possible to anticipate how much tape an arbitrary algorithm requires. Consequently, a Turing machine needs an unlimited supply.   
+
+Unbounded memory in Turing’s maze necessitates a register of infinite width. In such a hypothetical maze, the mouse still travels a finite distance from the entrance to the exit. But how far it voyages into the infinite register depends on the algorithm. 
+
+A register of infinite width entails a maze with an infinite repeating pattern. The pattern must be imposed onto the medium before it can replicate the functionality of all Turing machines. If the quiescent state of Turing’s maze is gray tiles, then the imposed pattern is analogous to a Turing machine whose unlimited supply of tape is not blank. Under this interpretation, Turing’s maze is best described as “weakly universal”. 
+
+In summary, while Turing’s maze can compute any algorithm, in formal nomenclature, it is not Turing-complete. 
 
 Reversible Turing’s Maze 
 
-Universal Computation 
+ 
+
+ 
 
 Turnmites 
 
