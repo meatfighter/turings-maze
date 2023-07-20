@@ -102,7 +102,63 @@ Here are test harnesses exercising all possible input values:
 
 The Mandelbrot set circuit employs a 1-to-256 demultiplexer and a 1-to-512 demultiplexer constructed from a copious amount of 1-to-2 demultiplexers organized into binary trees. 
 
+ 
+
 Sequential Logic 
+
+A register in Turing’s maze is a memory storage circuit with a data terminal and three control terminals: 
+
+[ pic ] 
+
+The Mandelbrot set circuit uses 16-bit registers, where each data terminal connects to the line of a bus shared by other registers and devices: 
+
+[ pic ] 
+
+To load a value from the register, the mouse visits the load terminal. It expresses the values in the data storage tiles to the bus lines. 
+
+To store a value into the register, the mouse visits the reset-and-store-enable terminal. It reverts the data storage tiles to red, and it connects them to the bus lines. Then the mouse expresses the value of another register or a device to the bus. This causes the mouse to enter some or all the register’s data terminals, changing the associated data storage tiles to green. Finally, the mouse visits the store-disable terminal, which disconnects the data storage tiles from the bus lines.  
+
+The Mandelbrot set circuit contains several devices connected to the bus, including a 16-bit adder-subtractor. To subtract two registers, the mouse visits the control lines of the registers and the adder-subtractor in a particular sequence: 
+
+adder-subtractor - enable subtraction 
+
+adder-subtractor - enable minuend store 
+
+minuend register - load 
+
+adder-subtractor - disable minuend store 
+
+adder-subtractor - enable subtrahend store 
+
+subtrahend register - load 
+
+adder-subtractor - disable subtrahend store 
+
+difference register - reset and enable store 
+
+adder-subtractor - subtract and reset 
+
+difference register - disable store 
+
+The Mandelbrot set circuits encodes microprograms like this using circuits of the form: 
+
+[ pic ] 
+
+The microprogram runs from the bottom to the top. It asserts control lines through a type of buffer to avoid conflicts induced by multiple calls to the same lines: 
+
+[ pic ] 
+
+The animation below shows buffers driving a common control line. The buffers prevent the invocations from leaking into each other. 
+
+[ pic ] 
+
+For branching, a microprogram uses a circuit of the form: 
+
+[ pic ] 
+
+If a branch loops back to an earlier part of a microprogram, a diode installed along the branch pathway ensures the mouse follows the loops in the correct direction: 
+
+[ pic ] 
 
  
 
@@ -128,6 +184,10 @@ To run the emulator, navigate to the local repository directory, and execute the
 
 [ emulator command ] 
 
+ 
+
+ 
+
 Mandelbrot Set 
 
 The emulator performs this transformation: 
@@ -135,6 +195,12 @@ The emulator performs this transformation:
 [ pic -> pic ] 
 
 Click either image to view the full-resolution versions (10,149 x 12,540 pixels).  
+
+ 
+
+ 
+
+ 
 
 The Mandelbrot set manifests on a 512x512 cell matrix. The image below depicts a 4x4 region. 
 
@@ -176,24 +242,42 @@ The address lines configure the demultiplexers, establishing a pathway from the 
 
  
 
-Universal Computation 
+Other Representations 
 
-A medium is Turing-complete if it can compute every Turing-computable function. Or, put another way, if it can replicate the functionality of all Turing machines. This section considers if Turing’s maze is such a medium. 
+It is possible to model Turing’s maze as a cellular automaton with sixteen cell states: 
 
-When a Turing machine runs, it allocates a finite amount of tape. But it is not possible to anticipate how much tape an arbitrary algorithm requires. Consequently, a Turing machine needs an unlimited supply.   
+[ pic of 16 tiles ] 
 
-Unbounded memory in Turing’s maze necessitates a register of infinite width. In such a hypothetical maze, the mouse still travels a finite distance from the entrance to the exit. But how far it voyages into the infinite register depends on the algorithm. 
+The rules that produce a new generation, which apply to the entire grid simultaneously, change only those few cells with the mouse in their neighborhood.  
 
-A register of infinite width entails a maze with an infinite repeating pattern. The pattern must be imposed onto the medium before it can replicate the functionality of all Turing machines. If the quiescent state of Turing’s maze is gray tiles, then the imposed pattern is analogous to a Turing machine whose unlimited supply of tape is not blank. Under this interpretation, Turing’s maze is best described as “weakly universal”. 
+It is also possible to model Turing’s maze as a turmite with forty-eight meta tiles: 
 
-In summary, while Turing’s maze can compute any algorithm, in formal nomenclature, it is not Turing-complete. 
+[ pic of 48 tiles ] 
 
-Reversible Turing’s Maze 
-
- 
+Since the meta tiles include the proximate maze walls, the turmite needs only the current meta tile and its direction when deciding what to do. 
 
  
 
-Turnmites 
+Universality 
+
+A medium is Turing-complete if it can compute every Turing-computable function. Put another way, if it can replicate the functionality of all Turing machines. This section considers if Turing’s maze is such a medium. 
+
+When a Turing machine runs, it allocates a finite amount of tape. But it is not possible to anticipate how much tape an arbitrary algorithm requires. As such, a Turing machine needs an unlimited supply. And importantly, the region of tape not containing the algorithm must be blank. This precludes the possibility that the algorithm is just an infinite lookup table that creates the illusion of computation. 
+
+Turing’s maze can emulate tape cells and the head with constructs built around the red and green data storage tiles, like the registers described above. But it needs infinite cells, which means a maze of infinite width. In such a hypothetical maze, if the mouse traverses the entrance to the exit, then it still covers a finite distance. How far it voyages into the limitless tape depends on the algorithm. 
+
+Consider the reverse: a Turing machine capable of simulating any Turing’s maze. Encoding an infinitely wide maze onto the tape would fill it up. That violates the rule mentioned above: the algorithm must initially fit on finite region of tape. However, it is possible to build a Turing machine that extends the maze on-demand. If the mouse reaches the maze’s edge, that machine would append more cell constructs. Such a machine would be universal because it can be initialized with a Turing’s maze representing any Turing-computable function. 
+
+But expansion is not an inherent property of Turing’s maze. The mouse cannot dig out new passages. The only way to achieve the effect is to impose it externally. Consequently, Turing’s maze is best described as “weakly universal” rather than Turing-complete. Meaning, it can compute any algorithm, but some algorithms require a maze specified by repeating yet infinite information. 
+
+Since Turing’s maze is universal, mazes exist for which it is not possible to determine if the mouse can traverse the entrance to the exit. This follows from the halting problem. 
+
+ 
+
+Reversibility 
+
+A Turing's maze is reversible if the mouse can change the color of a red or green tile at most once. Circuits with that constraint consist of one-time-use logic gates that lack reset paths. They can perform combinational logic, but not sequential logic. The red and green tiles within the gates store applied inputs. That enables the mouse to propagate inputs back to their origins in a reverse simulation. 
+
+While reversible Turing’s maze does not permit sequential logic, its effect can be attained by repeating combinational logic. A hypothetical maze containing an infinite chain of combinational logic could perform any algorithm. This implies that reversible Turing’s maze is also “weakly universal”. 
 
  
