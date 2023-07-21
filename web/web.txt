@@ -2,7 +2,7 @@ Turing’s Maze
 
 Abstract 
 
-Turing’s Maze is a discrete-event simulation of a mouse on a two-dimensional square lattice of black, gray, red, and green cells. As the mouse interacts with cells per a very simple set of rules, behaviors emerge particularly suited for emulating Boolean circuits. Consequently, it is possible to implement any algorithm as a maze traversed by the mouse.  
+Turing’s Maze is a discrete-event simulation of a mouse on a two-dimensional square lattice of black, gray, red, and green cells. As the mouse interacts with cells through a very simple set of rules, behaviors emerge particularly suited for emulating Boolean circuits. Consequently, any algorithm can be implemented as a maze traversed by the mouse.  
 
 This article describes the rules of Turing’s Maze. It explains how to build gates, combinational logic, and sequential logic. And it demonstrates the mouse’s ability to compute with an implementation of the Mandelbrot set algorithm. 
 
@@ -40,11 +40,11 @@ Formal Definition
 
 The simulator repeatedly performs the following three steps until the mouse exits the maze. 
 
-The simulator potentially changes the current tile color and the mouse’s direction per the following pseudocode. 
+The simulator potentially changes the current tile color and the mouse’s direction in accordance with the following pseudocode. 
 
 [ pseudocode ] 
 
-The simulator inspects the tiles immediately left, in front of, and right of the mouse. It uses the table below, where 1 indicates a wall (a gray tile) and 0 indicates a passage (a nongray tile), to potentially change the mouse’s direction to remain consistent with the right-hand rule modified to ignore four-way intersections. 
+The simulator inspects the tiles immediately left, in front of, and right of the mouse. It uses the table below, where 1 indicates a wall (a gray tile) and 0 indicates a passage (a nongray tile), to potentially change the mouse’s direction, maintaining consistent with the right-hand rule modified to ignore four-way intersections. 
 
 [ table ] 
 
@@ -52,19 +52,21 @@ The simulator moves the mouse in its direction to an adjacent tile.
 
 Circuits 
 
-In the circuits described below, the mouse propagates logic one as it travels. Paths made of black tiles, separated by gray tiles, direct the mouse between components. They function as signal channels analogous to the wires of an electronic circuit. Four-way intersections act as non-connecting, crossing wires because the mouse disregards the right-hand rule when it encounters them. 
+In the circuits described below, the mouse propagates logic one as it travels. Paths of black tiles, separated by gray tiles, direct the mouse between components. They function as signal channels analogous to the wires of an electronic circuit. Four-way intersections act as non-connecting, crossing wires because the mouse disregards the right-hand rule when it encounters them. 
 
 Red and green tiles operate as switching elements. Red represents a switch turned off, a disconnected channel that denies east-west signal propagation. And green represents a switch turned on, a connected channel that permits east-way signal propagation.  
 
 The mouse turns a switch off by southwardly stepping onto a green tile. And it turns a switch on by northwardly stepping onto a red tile. 
 
-Since a switch retains its state after the mouse steps away, red and green tiles also serve as data storage elements. In the circuits described below, red represents a stored logic zero and green represents a stored logic one.  
+Since a switch retains its state after the mouse steps away, red and green tiles also serve as data storage elements. In the circuits described below, red represents a stored logic zero, and green represents a stored logic one.  
 
 Note: It is possible to build inverted circuits, where the mouse propagates logic zero, or dual-rail circuits, where the mouse propagates logic zero or logic one depending on which of two paths the mouse takes. 
 
 Logic Gates 
 
-Unlike traditional logic gates, logic gates implemented in Turing’s maze store input Boolean values. The values are all initialized to logic zero. When the mouse visits an input terminal--where “visit” means it enters and it subsequentially returns from the terminal--it toggles the stored value corresponding to the input terminal to logic one. After setting the inputs in this way, the mouse enters an express-and-reset terminal, which evaluates the logical operation for the stored inputs. If the result is logic one, the mouse visits the output terminal, expressing the result to whatever is wired to the gate. Afterwards, the mouse resets the stored values to logic zeros, and it returns from the express-and-reset terminal. 
+Unlike traditional logic gates, logic gates implemented in Turing’s maze store input Boolean values. The values are all initialized to logic zero.  
+
+When the mouse visits an input terminal--where “visit” means it enters and it subsequentially returns from the terminal--it toggles a stored value to logic one. After setting the inputs in this way, the mouse enters an express-and-reset terminal, which evaluates the logical operation for the stored inputs. If the result is logic one, the mouse visits the output terminal, expressing the result to whatever is wired to the gate. Finally, the mouse resets the stored values to logic zeros, and it returns from the express-and-reset terminal. 
 
 To make this clear, the image below depicts an AND gate with the input terminals, the output terminal, and the express-and-reset terminal labeled.  
 
@@ -80,7 +82,7 @@ Each harness uses red and green tiles to control which input terminals the mouse
 
 [ gates ] 
 
-The XOR gate demonstrates combinational logic. It consists of a NAND gate and an OR gate whose outputs feed into an AND gate. The XOR’s express-and-reset terminal directs the mouse to the NAND and OR gate’s express-and-reset terminals prior to the AND’s express-and-reset terminal. This ensures the logical operations are performed in the correct sequence. 
+The XOR gate demonstrates combinational logic. It consists of a NAND gate and an OR gate whose outputs feed into an AND gate. The XOR’s express-and-reset terminal directs the mouse to the NAND and OR gate’s express-and-reset terminals prior to the AND’s express-and-reset terminal, ensuring the logical operations are performed in the correct sequence. 
 
 Like XOR, XNOR demonstrates combinational logic. It consists of a NOR gate and an AND gate whose outputs feed into an OR gate. As with XOR, XNOR’s express-and-reset terminal directs the mouse to evaluate the logical operations in the proper order. 
 
@@ -100,7 +102,7 @@ Here are test harnesses exercising all possible input values:
 
 [ pic ] 
 
-The Mandelbrot set circuit employs a 1-to-256 demultiplexer and a 1-to-512 demultiplexer constructed from a copious amount of 1-to-2 demultiplexers organized into binary trees. 
+The Mandelbrot set circuit employs a 1-to-256 demultiplexer and a 1-to-512 demultiplexer constructed from binary trees of 1-to-2 demultiplexers. 
 
  
 
@@ -114,11 +116,17 @@ The Mandelbrot set circuit uses 16-bit registers, where each data terminal conne
 
 [ pic ] 
 
-To load a value from the register, the mouse visits the load terminal. It expresses the values in the data storage tiles to the bus lines. 
+To load a value from the register, the mouse visits the load terminal. It expresses the data storage tiles to the bus lines. 
 
-To store a value into the register, the mouse visits the reset-and-store-enable terminal. It reverts the data storage tiles to red, and it connects them to the bus lines. Then the mouse expresses the value of another register or a device to the bus. This causes the mouse to enter some or all the register’s data terminals, changing the associated data storage tiles to green. Finally, the mouse visits the store-disable terminal, which disconnects the data storage tiles from the bus lines.  
+To store a value into the register: 
 
-The Mandelbrot set circuit contains several devices connected to the bus, including a 16-bit adder-subtractor. To subtract two registers, the mouse visits the control lines of the registers and the adder-subtractor in a particular sequence: 
+The mouse visits the reset-and-store-enable terminal. It reverts the data storage tiles to red, and it connects them to the bus lines.  
+
+The mouse expresses the value of another register or a device to the bus. This causes the mouse to enter some or all the register’s data terminals, changing data storage tiles to green.  
+
+The mouse visits the store-disable terminal, which disconnects the data storage tiles from the bus lines. 
+
+These steps repeated appear in the Mandelbrot set circuit. For example, to subtract two registers, the mouse visits the control lines of the registers and a 16-bit adder-subtractor, which all sharing the same bus, in a particular sequence: 
 
 adder-subtractor - enable subtraction 
 
@@ -140,15 +148,17 @@ adder-subtractor - subtract and reset
 
 difference register - disable store 
 
-The Mandelbrot set circuits encodes microprograms like this using circuits of the form: 
+There are no specific minuend, subtrahend, and difference registers. The names refer to any registers playing those roles during a subtraction. 
+
+The sequence above is an example of a microprogram. The Mandelbrot set circuit encodes microprograms like this: 
 
 [ pic ] 
 
-The microprogram runs from the bottom to the top. It asserts control lines through a type of buffer to avoid conflicts induced by multiple calls to the same lines: 
+The microprogram runs bottom-up. It asserts control lines through a type of buffer to avoid sharing conflicts: 
 
 [ pic ] 
 
-The animation below shows buffers driving a common control line. The buffers prevent the invocations from leaking into each other. 
+The animation below shows buffers driving a common control line. The buffers prevent assertions from leaking into each other. 
 
 [ pic ] 
 
@@ -156,7 +166,7 @@ For branching, a microprogram uses a circuit of the form:
 
 [ pic ] 
 
-If a branch loops back to an earlier part of a microprogram, a diode installed along the branch pathway ensures the mouse follows the loops in the correct direction: 
+If a branch loops back to an earlier part of a microprogram, a diode installed along the return pathway ensures the mouse traverses the loop in the correct direction: 
 
 [ pic ] 
 
@@ -172,7 +182,7 @@ This project includes a simulator and an emulator written in Java. The simulator
 
 It runs the mouse from the entrance to the exit, and it saves an image of the final maze state.  
 
-The emulator does the same, but it executes much faster. Before it runs the mouse from the entrance to the exit, it positions the mouse on each red and green tile, and it orients the mouse in each cardinal direction. For each of those starting configurations, it runs a simulation that obtains a list of tiles the mouse turns red and a list of the tiles the mouse turns green until the mouse arrives at a red or green tile facing east or west. During each emulation cycle, it uses that precomputed table to jump the mouse from a source a red or green tile, while facing east or west, to a destination red or green tile, again facing east or west, while performing the expected tile color changes. If the mouse lands on a red tile, the emulator reverses its direction. 
+The emulator does the same, but it executes much faster. Before it runs the mouse from the entrance to the exit, it positions and orients the mouse on each red and green tile, and in each cardinal direction. It runs a simulation for those configurations that obtains a list of tiles the mouse turns red and a list of the tiles the mouse turns green until the mouse arrives at a red or green tile facing east or west. During each emulation cycle, it uses that precomputed table to jump the mouse from a source a red or green tile, while facing east or west, to a destination red or green tile, again facing east or west, while performing the expected tile color changes. If the mouse lands on a red tile, the emulator reverses its direction. 
 
 To download the source code and the compiled binary, clone this repository. 
 
@@ -196,7 +206,43 @@ The emulator performs this transformation:
 
 Click either image to view the full-resolution versions (10,149 x 12,540 pixels).  
 
+The maze contains circuits that compute the Mandelbrot set and a matrix that displays the result: 
+
+[ pic ] 
+
  
+
+ 
+
+Here is a high-level overview: 
+
+[ landscape pic ] 
+
+The multiplier operates on 16-bit fixed-point numbers, where the leading six bits represent a signed integer, and the remaining ten bits represent a fraction, permitting values in the range [ -32.0, 31.9990234375 ]. It contains three registers: 
+
+I – 5-bit loop index 
+
+A – 16-bit multiplicand 
+
+P – 32-bit product accessible as high and low 16-bit registers, PH and PL, respectively 
+
+It contains three devices that perform the following operations. 
+
+Move PH into PL 
+
+Unsigned right-shift P by 1 
+
+Left-shift P by 6 
+
+The registers and the devices are labeled in the image below. 
+
+[ pic ] 
+
+It executes the following algorithm on multiplicands x and y.  
+
+[ pseudocode ] 
+
+PH contains the resultant product. 
 
  
 
@@ -244,7 +290,7 @@ The address lines configure the demultiplexers, establishing a pathway from the 
 
 Other Representations 
 
-It is possible to model Turing’s maze as a cellular automaton with sixteen cell states: 
+Turing’s maze can be modeled as a cellular automaton with sixteen cell states: 
 
 [ pic of 16 tiles ] 
 

@@ -58,6 +58,35 @@ P <<= 6;
 if b_15
   PH = -PH;
 
+
+----
+
+A <- x
+PH <- y
+
+if y_15 then
+  PH <- -PH
+end
+
+PL <- PH
+I <- 0
+PH <- 0
+
+do
+  if PL_0 = 1 then
+    PH <- add(PH, A)
+  end
+  P <- unsignedRightShift(P, 1)
+  I <- add(I, 1)
+while I_4 = 0
+  
+P <- leftShift(P, 6)
+if y_15 then
+  PH <- -PH
+end
+
+----
+
  
 mandelbrot
 
@@ -97,6 +126,28 @@ while true
     break;
   Y = ((X * Y) << 1) + Y0;
   X = X2 - Y2 + X0;
+
+-----------------
+
+X,X0 initialized with x-coordinate
+Y,Y0 initialized with y-coordinate
+
+I <- 0
+while true
+  Y2 <- multiply(Y, Y)
+  X2 <- multiply(X, X)
+  S <- add(add(0b1111_0000_0000_0000, X2), Y2)
+  if S_15 = 0 then
+    break
+  end
+  I <- add(I, 1)
+  if I_6 = 1 then
+    break
+  end
+  Y <- add(leftShift(multipy(X, Y), 1), Y0)
+  X <- add(subtract(X2, Y2), X0)
+
+-----------------------
 
 
 display
