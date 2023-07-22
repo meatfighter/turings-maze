@@ -4,11 +4,11 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="date" content="2023-07-11">
+<meta name="date" content="2023-07-22">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#FFFFFF">
 
-<link rel="stylesheet" href="style.css?v=2023-07-11" type="text/css">
+<link rel="stylesheet" href="style.css?v=2023-07-22" type="text/css">
 <link rel="manifest" href="manifest.json">
 <link rel="mask-icon" href="mask-icon.svg" color="#000000">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <link rel="shortcut icon" href="favicon.ico" sizes="any" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&family=Source+Code+Pro&family=Open+Sans&family=Press+Start+2P&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&family=Source+Code+Pro&family=Open+Sans&display=swap" rel="stylesheet">
 
 <script>
 MathJax = {
@@ -51,6 +51,187 @@ MathJax = {
 
 <body>
 
+<p class="title">Turing’s Maze</p>
+
+<h1 id="abstract"><a class="header" href="#abstract">Abstract</a></h1>
+
+<p>Turing’s Maze is a discrete-event simulation of a mouse on a two-dimensional square lattice of black, gray, red, and green cells. As the mouse interacts with cells through a very simple set of rules, behaviors emerge particularly suited for emulating Boolean circuits. Consequently, any algorithm can be implemented as a maze traversed by the mouse.</p>
+
+<p>This article describes the rules of Turing’s Maze. It explains how to build gates, combinational logic, and sequential logic. And it demonstrates the mouse’s ability to compute with an implementation of the Mandelbrot set algorithm.</p>
+
+<h1 id="description"><a class="header" href="#description">Description</a></h1> 
+
+<p>Each simulation state consists of the mouse on a cell, facing a cardinal direction (north, east, south, or west). The mouse may change direction and its cell color according to rules described below. Then the mouse moves forward to an adjacent cell, transitioning the simulation to the next state.</p>
+
+<p>The mouse can move to cells of any color except for gray, which act as the walls of the maze. Passages primarily consist of black cells. Red and green cells operate something like traffic lights.</p> 
+
+<p>The mouse enters a maze from a lone black cell in some column of the southernmost row. It exits to a lone black cell in some column of the northernmost row:</p>
+
+<p><img class="centered" alt="zigzag" id="zigzag.gif" src="zigzag.gif"></p>
+
+<p>The mouse traverses the maze by following the right-hand rule. That is, from the start, it keeps its right hand (or paw) in contact with the wall to its right, and it follows the wall around corners as it advances. However, if it encounters a four-way intersection, it plows straight through:</p>
+
+<p><img class="centered" alt="right-hand-rule" id="right-hand-rule.gif" src="right-hand-rule.gif"></p>
+
+<p>If the mouse lands on a green cell while facing east or west, it proceeds as if the cell were black:</p>
+
+<p><img class="centered" alt="green-east-west" id="green-east-west.gif" src="green-east-west.gif"></p>
+
+<p>If the mouse lands on a red cell while facing east or west, it reverses direction:</p>
+
+<p><img class="centered" alt="red-east-west" id="red-east-west.gif" src="red-east-west.gif"></p>
+
+<p>If the mouse lands on a red or a green cell while facing south, the cell changes to or remains as red, and the mouse turns north:</p>
+
+<p><img class="centered" alt="south" id="south.gif" src="south.gif"></p>
+
+<p>Finally, if the mouse lands on a red or green cell while facing north, the cell changes to or remains as green, and the mouse turns south:</p>
+
+<p><img class="centered" alt="north" id="north.gif" src="north.gif"></p>
+
+
+<h1 id="formal-definition"><a class="header" href="#formal-definition">Formal Definition</a></h1>
+
+<p>The simulator repeatedly performs these steps until the mouse exits the maze:</p>
+
+<ol>
+<li>
+<p>The simulator may change the color of the tile the mouse is situated on and the mouse’s direction:</p>
+
+<pre class="pseudocode2">    
+<span class="line"><span class="keyword2">if</span> tile = red <span class="keyword2">then</span></span>
+<span class="line">  <span class="keyword2">if</span> direction = north <span class="keyword2">then</span></span>
+<span class="line">    tile &larr; green</span>
+<span class="line">  <span class="keyword2">end</span></span>
+<span class="line">  direction &larr; reverse(direction)</span>
+<span class="line"><span class="keyword2">else if</span> tile = green <span class="keyword2">then</span></span>
+<span class="line">  <span class="keyword2">if</span> direction = north <span class="keyword2">then</span></span>
+<span class="line">    direction &larr; south</span>
+<span class="line">  <span class="keyword2">else if</span> direction = south <span class="keyword2">then</span></span>
+<span class="line">    direction &larr; north</span>
+<span class="line">    tile &larr; red</span>
+<span class="line">  <span class="keyword2">end</span></span>
+<span class="line"><span class="keyword2">end</span></span>
+</pre>
+
+</li>
+
+<li>
+<p>The simulator inspects the tiles immediately left, in front of, and right of the mouse. It uses the table below, where <span class="mono">1</span> indicates a wall (a gray tile) and <span class="mono">0</span> indicates a passage (a nongray tile), to abide by the right-hand rule modified to ignore four-way intersections.</p>
+
+<table class="borderless2">
+<tr><th class="borderless">Tiles</th><th class="borderless">Action</th></tr>
+<tr><td class="mono centered">000</td><td class="borderless">None (four-way intersection)</td></tr>  
+<tr><td class="mono centered">001</td><td class="borderless">None (right branch ahead)</td></tr>
+<tr><td class="mono centered">010</td><td class="borderless">Turn 90&deg; clockwise (take right branch)</td></tr>
+<tr><td class="mono centered">011</td><td class="borderless">Turn 90&deg; counterclockwise (can only go left)</td></tr>
+<tr><td class="mono centered">100</td><td class="borderless">Turn 90&deg; clockwise (take right branch)</td></tr>
+<tr><td class="mono centered">101</td><td class="borderless">None (straight passage)</td></tr>
+<tr><td class="mono centered">110</td><td class="borderless">Turn 90&deg; clockwise (can only go right)</td></tr>
+<tr><td class="mono centered">111</td><td class="borderless">Reverse direction (dead end)</td></tr>    
+</table>
+
+</li>
+
+<li><p>The simulator moves the mouse forward to an adjacent tile.</p></li>
+</ol>
+
+
+<h1 id="circuits"><a class="header" href="#circuits">Circuits</a></h1>
+ 
+<p>In the circuits described below, the mouse propagates logic one as it travels. Paths of black tiles, separated by gray tiles, direct the mouse between components. They function as signal channels analogous to the wires of an electronic circuit. Four-way intersections act as non-connecting, crossing wires because the mouse disregards the right-hand rule when it encounters them.</p>
+
+<p>Red and green tiles operate as switching elements. Red represents a switch turned off, a disconnected channel that denies east-west signal propagation. And green represents a switch turned on, a connected channel that permits east-way signal propagation.</p>
+
+<p>The mouse turns a switch off by southwardly stepping onto a green tile. And it turns a switch on by northwardly stepping onto a red tile.</p>
+
+<p>Since a switch retains its state after the mouse steps away, red and green tiles also serve as data storage elements. In the circuits below, red represents a stored logic zero, and green represents a stored logic one.</p>
+
+<p>Note: It is possible to build inverted circuits, where the mouse propagates logic zero, or dual-rail circuits, where the mouse propagates logic zero or logic one depending on which of two paths the mouse takes.</p>
+
+
+<h1 id="logic-gates"><a class="header" href="#logic-gates">Logic Gates</a></h1>
+ 
+<p>Unlike traditional logic gates, logic gates implemented in Turing’s maze store input Boolean values. The values are all initialized to logic zero.</p> 
+
+<p>When the mouse visits an input terminal&mdash;where &ldquo;visit&rdquo; means it enters and it subsequently returns from the terminal&mdash;it toggles a stored value to logic one. After setting the inputs in this way, the mouse enters an express-and-reset terminal, which evaluates the logical operation for the stored inputs. If the result is logic one, the mouse visits the output terminal, expressing the result to whatever is wired to the gate. Finally, the mouse resets the stored values to logic zeros, and it returns from the express-and-reset terminal.</p> 
+
+<p>To make this clear, the image below depicts an AND gate with the input terminals, the output terminal, and the express-and-reset terminal labeled.</p>
+
+<p><img class="centered" alt="and-gate" id="and-gate.png" src="and-gate.png"></p>
+
+<p>When the mouse visits an input terminal, it switches a red tile to a green tile. When the mouse enters the express-and-reset terminal, it visits the output terminal only if the mouse switched both red tiles to green. Then it flips any green tiles back to red. And it returns from the express-and-reset terminal.</p>
+
+<p>The following animated examples depict logic gates attached to test harnesses of the form:</p>
+
+<p><img class="centered" alt="test-harness" id="test-harness.png" src="test-harness.png"></p>
+
+<p>Each harness uses red and green tiles to control which input terminals the mouse visits, and a red tile to capture the result of the logical operation for the given input values.</p>
+
+<h2 id="buffer"><a class="header" href="#buffer">Buffer</a></h2>
+
+<p><img class="centered" alt="buffer" id="buffer.gif" src="buffer.gif"></p>
+
+<h2 id="inverter"><a class="header" href="#inverter">Inverter</a></h2>
+
+<p><img class="centered" alt="inverter" id="inverter.gif" src="inverter.gif"></p>
+
+<h2 id="and-gate"><a class="header" href="#and-gate">AND</a></h2>
+
+<p><img class="centered" alt="and" id="and.gif" src="and.gif"></p>
+
+<h2 id="or-gate"><a class="header" href="#or-gate">OR</a></h2>
+
+<p><img class="centered" alt="or" id="or.gif" src="or.gif"></p>
+
+<h2 id="nand-gate"><a class="header" href="#nand-gate">NAND</a></h2>
+
+<p><img class="centered" alt="nand" id="nand.gif" src="nand.gif"></p>
+
+<h2 id="nor-gate"><a class="header" href="#nor-gate">NOR</a></h2>
+
+<p><img class="centered" alt="nor" id="nor.gif" src="nor.gif"></p>
+
+<h2 id="xor-gate"><a class="header" href="#xor-gate">XOR</a></h2>
+
+<p>The XOR gate employs combinational logic. It consists of a NAND gate and an OR gate whose outputs feed into an AND gate. The XOR’s express-and-reset terminal directs the mouse to the NAND and OR gate’s express-and-reset terminals prior to the AND’s express-and-reset terminal, ensuring the logical operations are performed in the correct sequence:</p>
+
+<p><img class="centered" alt="xor" id="xor.gif" src="xor.gif"></p>
+
+<h2 id="xnor-gate"><a class="header" href="#xnor-gate">XNOR</a></h2>
+
+<p>Like XOR, XNOR employs combinational logic. It consists of a NOR gate and an AND gate whose outputs feed into an OR gate. As with XOR, XNOR’s express-and-reset terminal directs the mouse to evaluate the logical operations in the proper order:</p>
+
+<p><img class="centered" alt="xnor" id="xnor.gif" src="xnor.gif"></p>
+
+<h2 id="transmission-gate"><a class="header" href="#transmission-gate">Transmission</a></h2>
+
+<p>A single red or green tile can function as a transmission gate:</p>
+
+<p><img class="centered" alt="transmission-gate" id="transmission-gate.png" src="transmission-gate.png"></p>
+
+<p>The image below depicts part of the circuit that computes the Mandelbrot set. It shows stacks of transmission gates with common control lines that connect or disconnect devices to a bus.</p>
+
+<p><img class="centered" alt="transmission-gates" id="transmission-gates.png" src="transmission-gates.png"></p>
+
+<h2 id="demultiplexer"><a class="header" href="#demultiplexer">Demultiplexer</a></h2>
+
+<p>A 1-to-2 demultiplexer steers the mouse from a data input terminal to one of two output terminals:</p>
+
+<p><img class="centered" alt="demux" id="demux.png" src="demux.png"></p>
+
+<p>Here are test harnesses exercising all possible input values:</p>
+
+<p><img class="centered" alt="demux" id="demux.gif" src="demux.gif"></p>
+
+<p>The Mandelbrot set circuit uses a 1-to-256 demultiplexer and a 1-to-512 demultiplexer constructed from binary trees of 1-to-2 demultiplexers.</p>
+
+
+<h1 id="sequential-logic"><a class="header" href="#sequential-logic">Sequential Logic</a></h1>
+
+<p>A register in Turing’s maze is a memory storage circuit with a data terminal and three control terminals:</p>
+
+<p><img class="centered" alt="register" id="register.png" src="register.png"></p>
 
 <hr>
 <table class="copyright">

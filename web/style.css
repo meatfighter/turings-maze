@@ -27,7 +27,7 @@ li {
 }
 
 p.title {
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Open Sans', sans-serif;
     font-size: 64px;    
     font-weight: 400;
     text-align: center;
@@ -43,8 +43,15 @@ p.title {
 }
 
 h1 {  
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Open Sans', sans-serif;
     font-size: 24px;
+    font-weight: 300;
+    padding-top: 30px;
+}
+
+h2 {  
+    font-family: 'Open Sans', sans-serif;
+    font-size: 18px;
     font-weight: 300;
     padding-top: 30px;
 }
@@ -97,7 +104,7 @@ p.copyright {
 }
 
 p.home {
-    font-family: 'Press Start 2P', cursive;
+    font-family: 'Open Sans', sans-serif;
     font-size: 16px;
     line-height: 27px;
     font-weight: 300;
@@ -138,7 +145,13 @@ span.command {
 table.borderless {
     margin-left: auto;
     margin-right: auto;
-    border-collapse: collapse;  
+    border-collapse: collapse;
+    line-height: normal;
+}
+
+table.borderless2 {
+    border-collapse: collapse;
+    line-height: normal;
 }
 
 th.borderless {
@@ -173,4 +186,68 @@ td.right {
 td.mono {
     font-size: 16px;
     font-family: 'Source Code Pro', monospace;    
+}
+
+pre.pseudocode2 {
+    font-family: 'Source Code Pro', monospace;
+    font-size: 16px;
+    border-left: 6px;
+    width: calc(100% - 71px);
+    padding: 0px 0px 0px 50px;
+    white-space: pre;
+    counter-reset: step;
+    counter-increment: step 0;
+    position: relative;
+    line-height: normal;
+    margin-top: -20px;
+}
+
+pre.pseudocode2 .line:before {
+    color: #3F3F3F;
+    content: counter(step);
+    counter-increment: step;     
+    display: inline-block;
+    width: 2em;
+    padding-right: 1em;
+    margin-right: 1em;
+    text-align: right;
+    margin-left: -3.25em;
+}
+
+span.keyword2 {
+    font-weight: bold;
+}
+
+span.normal {
+    color: #E8E8E8; /* #BBBBBB; */
+}
+
+span.comment {
+    color: #A0A0A0;  /* #808080; */
+}
+
+span.keyword {
+    color: #FF953F; /* #CC7832; */
+}
+
+span.number {
+    color: #81BBE8; /* #6897BB; */
+}
+
+span.number2 {
+    color: #80E580;
+}
+
+span.identifier {
+    color: #BD94D3; /* #9876AA; */
+}
+
+span.label {
+    color: #E8E8E8; /* #BBBBBB; */
+    font-weight: bold;
+}
+
+span.symbols {
+    font-family: 'Noto Sans Symbols 2', sans-serif;
+    font-size: 15px;
 }
