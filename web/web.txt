@@ -148,17 +148,17 @@ adder-subtractor - subtract and reset
 
 difference register - disable store 
 
-There are no specific minuend, subtrahend, and difference registers. The names refer to any registers playing those roles during a subtraction. 
+There are no specific minuend, subtrahend, and difference registers. Rather, the names refer to any registers playing those roles during a subtraction. 
 
 The sequence above is an example of a microprogram. The Mandelbrot set circuit encodes microprograms like this: 
 
 [ pic ] 
 
-The microprogram runs bottom-up. It asserts control lines through a type of buffer to avoid sharing conflicts: 
+The microprogram runs bottom-up. It asserts control lines through a buffer to avoid sharing conflicts: 
 
 [ pic ] 
 
-The animation below shows buffers driving a common control line. The buffers prevent assertions from leaking into each other. 
+The animation below shows buffers driving a common control line. The buffers prevent separate line assertions from leaking into each other. 
 
 [ pic ] 
 
@@ -218,7 +218,9 @@ Here is a high-level overview:
 
 [ landscape pic ] 
 
-The multiplier operates on 16-bit fixed-point numbers, where the leading six bits represent a signed integer, and the remaining ten bits represent a fraction, permitting values in the range [ -32.0, 31.9990234375 ]. It contains three registers: 
+Multiplier 
+
+The multiplier operates on 16-bit fixed-point numbers, where the leading six bits represent a signed, two's complement integer, and the remaining ten bits represent a fraction, permitting values in the range [ -32.0, 31.9990234375 ]. It contains three registers: 
 
 I – 5-bit loop index 
 
@@ -226,7 +228,7 @@ A – 16-bit multiplicand
 
 P – 32-bit product accessible as high and low 16-bit registers, PH and PL, respectively 
 
-It contains three devices that perform the following operations. 
+The multiplier contains three devices that perform the following operations. 
 
 Move PH into PL 
 
@@ -242,13 +244,65 @@ It executes the following algorithm on multiplicands x and y.
 
 [ pseudocode ] 
 
-PH contains the resultant product. 
+At completion, PH contains the resultant product. 
 
- 
+Mandelbrot Evaluator 
 
- 
+The Mandelbrot evaluator is based on the optimized escape time algorithm described here. It contains eight registers: 
 
-The Mandelbrot set manifests on a 512x512 cell matrix. The image below depicts a 4x4 region. 
+I – 7-bit loop index 
+
+X0 – evaluation point x-coordinate 
+
+Y0 – evaluation point y-coordinate  
+
+X – escaping point x-coordinate 
+
+Y – escaping point y-coordinate  
+
+X2 – X squared 
+
+Y2 – Y squared 
+
+S – sum of squares 
+
+The Mandelbrot evaluator also contains a device that left shifts by 1. The registers and the device are labeled in the image below. 
+
+[ pic ] 
+
+The following pseudocode explains how it works.  
+
+[ pseudocode ] 
+
+X0 and Y0 are initialized to the x- and y-coordinates of the evaluation point, respectively. 
+
+The binary value 1111000000000000 represents –4.0.  
+
+At completion, I contains the escape iterations. It maxes out at 64. 
+
+Main 
+
+The main microprogram plots a 512x512 pixel region of the Mandelbrot set in the range x E (-2.0,0.5) and y E (-1.25, 1.25). Since the set is horizontally symmetric within that region, the microprogram computes only the upper half. The display device reflects it to produce the entire image. 
+
+The main microprogram contains four registers: 
+
+J – 10-bit column index 
+
+I – 10-bit row index 
+
+X - evaluation point x-coordinate 
+
+Y – evaluation point y-coordinate 
+
+It executes the following algorithm. 
+
+[ pseudocode ] 
+
+The constants 1111101100000000 and 1111100000000000 represent –1.25 and –2.0, respectively. The value 5 corresponds to the interval between points: 2.5 / 512 = 0.0048828125. 
+
+Display 
+
+The main microprogram plots the Mandelbrot set on a 512x512 cell matrix. The image below depicts a 4x4 region. 
 
 [ pic ] 
 
@@ -260,29 +314,7 @@ Demultiplexers drive the row and column lines:
 
 [ pic ] 
 
-The maze takes advantage of the Mandelbrot set’s horizontal symmetry: it only computes the upper half. The row demultiplexer mirrors the computed region into the lower half. 
-
-The row and column demultiplexers share a 9-bit bus. Red tiles, acting as transmission gates, establish or break the connection between a demultiplexer and the bus: 
-
-[ pic ] 
-
-From left to right, the control lines are: 
-
-Connect row demultiplexer address lines to the bus 
-
-Disconnect row demultiplexer address lines from the bus 
-
-Connect column demultiplexer address lines to the bus 
-
-Disconnect column demultiplexer address lines from the bus 
-
-Connect common row and column demultiplexers data line to the bus 
-
-Disconnect common row and column demultiplexers data line from the bus 
-
-Express the AND gates, and reset the AND gates and demultiplexers 
-
-The address lines configure the demultiplexers, establishing a pathway from the common data line (bit-0 of the bus) to the row and column lines.  
+As mentioned, the circuit takes advantage of the Mandelbrot set’s horizontal symmetry. The row demultiplexer reflects the computed upper half into the lower half. 
 
  
 

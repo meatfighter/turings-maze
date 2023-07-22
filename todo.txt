@@ -72,13 +72,16 @@ PL <- PH
 I <- 0
 PH <- 0
 
-do
+while true do
   if PL_0 = 1 then
     PH <- add(PH, A)
   end
   P <- unsignedRightShift(P, 1)
   I <- add(I, 1)
-while I_4 = 0
+  if I_4 = 1 then
+    break
+  end
+end
   
 P <- leftShift(P, 6)
 if y_15 then
@@ -129,11 +132,14 @@ while true
 
 -----------------
 
-X,X0 initialized with x-coordinate
-Y,Y0 initialized with y-coordinate
+for a + i b
 
+X0 <- a
+Y0 <- b
+X <- X0
+Y <- Y0
 I <- 0
-while true
+while true do
   Y2 <- multiply(Y, Y)
   X2 <- multiply(X, X)
   S <- add(add(0b1111_0000_0000_0000, X2), Y2)
@@ -146,6 +152,7 @@ while true
   end
   Y <- add(leftShift(multipy(X, Y), 1), Y0)
   X <- add(subtract(X2, Y2), X0)
+end
 
 -----------------------
 
@@ -177,7 +184,7 @@ Y = 0b1111_1011_0000_0000;
 I = 0;
 
 while true
-  X = 0b1111_1000_0000_0000;
+  X = 0b1111_1000_0000_0000; 
   J = 0;
   while true
     display(J, I, eval(X, Y));
@@ -189,6 +196,33 @@ while true
   if I_8
     break;
   Y = add(5, Y);
+
+---------------------
+
+Y <- 0b1111_1011_0000_0000 
+I <- 0
+
+while true do
+  X <- 0b1111_1000_0000_0000
+  J <- 0
+  while true do
+    plot(J, I, mandelbrot(X, Y))
+    J = add(1, J)
+    if J_9 then
+      break
+    end
+    X <- add(5, X)
+  end
+  I <- add(1, I)
+  if I_8 then
+    break
+  end
+  Y <- add(5, Y)
+end
+
+
+
+---------------------
 
       
 
