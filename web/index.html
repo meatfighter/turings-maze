@@ -120,7 +120,7 @@ MathJax = {
 <p>The simulator inspects the tiles immediately left, in front of, and right of the mouse. It uses the table below, where <span class="mono">1</span> indicates a wall (a gray tile) and <span class="mono">0</span> indicates a passage (a nongray tile), to abide by the right-hand rule modified to ignore four-way intersections.</p>
 
 <table class="borderless2">
-<tr><th class="borderless">Tiles</th><th class="borderless">Action</th></tr>
+<tr><th class="borderless">Walls</th><th class="borderless">Action</th></tr>
 <tr><td class="mono centered">000</td><td class="borderless">None (four-way intersection)</td></tr>  
 <tr><td class="mono centered">001</td><td class="borderless">None (right branch ahead)</td></tr>
 <tr><td class="mono centered">010</td><td class="borderless">Turn 90&deg; clockwise (take right branch)</td></tr>
@@ -176,35 +176,35 @@ MathJax = {
 
 <p><img class="centered" alt="inverter" id="inverter.gif" src="inverter.gif"></p>
 
-<h2 id="and-gate"><a class="header" href="#and-gate">AND</a></h2>
+<h2 id="and-gate"><a class="header" href="#and-gate">AND Gate</a></h2>
 
 <p><img class="centered" alt="and" id="and.gif" src="and.gif"></p>
 
-<h2 id="or-gate"><a class="header" href="#or-gate">OR</a></h2>
+<h2 id="or-gate"><a class="header" href="#or-gate">OR Gate</a></h2>
 
 <p><img class="centered" alt="or" id="or.gif" src="or.gif"></p>
 
-<h2 id="nand-gate"><a class="header" href="#nand-gate">NAND</a></h2>
+<h2 id="nand-gate"><a class="header" href="#nand-gate">NAND Gate</a></h2>
 
 <p><img class="centered" alt="nand" id="nand.gif" src="nand.gif"></p>
 
-<h2 id="nor-gate"><a class="header" href="#nor-gate">NOR</a></h2>
+<h2 id="nor-gate"><a class="header" href="#nor-gate">NOR Gate</a></h2>
 
 <p><img class="centered" alt="nor" id="nor.gif" src="nor.gif"></p>
 
-<h2 id="xor-gate"><a class="header" href="#xor-gate">XOR</a></h2>
+<h2 id="xor-gate"><a class="header" href="#xor-gate">XOR Gate</a></h2>
 
 <p>The XOR gate employs combinational logic. It consists of a NAND gate and an OR gate whose outputs feed into an AND gate. The XOR’s express-and-reset terminal directs the mouse to the NAND and OR gate’s express-and-reset terminals prior to the AND’s express-and-reset terminal, ensuring the logical operations are performed in the correct sequence:</p>
 
 <p><img class="centered" alt="xor" id="xor.gif" src="xor.gif"></p>
 
-<h2 id="xnor-gate"><a class="header" href="#xnor-gate">XNOR</a></h2>
+<h2 id="xnor-gate"><a class="header" href="#xnor-gate">XNOR Gate</a></h2>
 
 <p>Like XOR, XNOR employs combinational logic. It consists of a NOR gate and an AND gate whose outputs feed into an OR gate. As with XOR, XNOR’s express-and-reset terminal directs the mouse to evaluate the logical operations in the proper order:</p>
 
 <p><img class="centered" alt="xnor" id="xnor.gif" src="xnor.gif"></p>
 
-<h2 id="transmission-gate"><a class="header" href="#transmission-gate">Transmission</a></h2>
+<h2 id="transmission-gate"><a class="header" href="#transmission-gate">Transmission Gate</a></h2>
 
 <p>A single red or green tile can function as a transmission gate:</p>
 
@@ -229,10 +229,115 @@ MathJax = {
 
 <h1 id="sequential-logic"><a class="header" href="#sequential-logic">Sequential Logic</a></h1>
 
-<p>A register in Turing’s maze is a memory storage circuit with a data terminal and three control terminals:</p>
+<p>As shown below, a 1-bit register combines a data storage element, a transmission gate, and a buffer. It provides store and load access through a single data terminal. The store-enable-and-reset terminal turns the transmission gate on, connecting the data terminal to the data storage element, and it resets the data storage element to red. The store-disable terminal turns the transmission gate off, disconnecting the data terminal from the data storage element. The load terminal expresses the data storage element to the data terminal through the buffer.</p>
 
 <p><img class="centered" alt="register" id="register.png" src="register.png"></p>
 
+<p>The Mandelbrot set circuit uses 16-bit registers, where each data terminal connects to the line of a bus shared by other registers and devices:</p>
+
+<p><img class="centered" alt="register-16" id="register-16.png" src="register-16.png"></p>
+
+<p>To load a value from the register, the mouse visits the load terminal. It expresses the data storage elements to the bus.</p>
+
+<p>To store a value in the register:</p>
+
+<ol>
+<li>The mouse visits the store-enable-and-reset terminal. It connects the data storage elements to the bus, and it reverts them to red.</li>
+
+<li>The mouse expresses a value to the bus from some other register or device. This causes the mouse to enter some or all this register’s data terminals, changing data storage elements to green.</li>
+
+<li>The mouse visits the store-disable terminal, disconnecting the data storage elements from the bus.</li>
+</ol>
+
+<p>The buffers prevent assertions of the shared bus lines from leaking to the load terminal through green data storage elements.</p>
+
+<p>The register load and register store steps described above repeatedly appear in the Mandelbrot set circuit. For example, to subtract two registers, the mouse visits the control lines of the registers and a 16-bit adder-subtractor in a particular sequence:</p>
+
+<ol>
+<li><span class="adder-subtractor">adder-subtractor</span> &ndash; enable subtraction</li> 
+
+<li><span class="adder-subtractor">adder-subtractor</span> &ndash; enable minuend store</li> 
+
+<li><span class="minuend">minuend register</span> &ndash; load</li> 
+
+<li><span class="adder-subtractor">adder-subtractor</span> &ndash; disable minuend store</li> 
+
+<li><span class="adder-subtractor">adder-subtractor</span> &ndash; enable subtrahend store</li> 
+
+<li><span class="subtrahend">subtrahend register</span> &ndash; load</li> 
+
+<li><span class="adder-subtractor">adder-subtractor</span> &ndash; disable subtrahend store</li> 
+
+<li><span class="difference">difference register</span> &ndash; enable store and reset</li> 
+
+<li><span class="adder-subtractor">adder-subtractor</span> &ndash; subtract and reset</li> 
+
+<li><span class="difference">difference register</span> &ndash; disable store</li>
+</ol>
+
+<p>There are no specific minuend, subtrahend, and difference registers. The names refer to any registers playing those roles during a subtraction.</p>
+
+<p>The sequence above is an example of a <a href="https://en.wikipedia.org/wiki/Microcode" target="_blank">microprogram</a>. The Mandelbrot set circuit encodes microprograms like this:</p>
+
+<p><img class="centered" alt="microprogram" id="microprogram.png" src="microprogram.png"></p>
+
+<p>The microprogram runs bottom-up. The mouse asserts control lines through buffers to avoid sharing conflicts.</p>
+
+<p>For branching, a microprogram uses a circuit of the form:</p>
+
+<p><img class="centered" alt="branching" id="branching.png" src="branching.png"></p>
+
+<p>After entering from the southern terminal, the mouse turns the transmission gate on, it resets the data storage element to red, and it visits a terminal that evaluates the branch condition. The mouse expresses the branch condition result through the transmission gate to the data storage element. Upon returning, the mouse turns the transmission gate off, and then it attempts to traverse the data storage element. If the stored branch condition is logic one, the mouse exits the north-east terminal. Otherwise, it exits the north-west terminal.</p>
+
+<p>If a branch loops back to an earlier part of a microprogram, a diode installed along the return pathway ensures the mouse traverses the loop in the correct direction:</p>
+
+<p><img class="centered" alt="diode" id="diode.gif" src="diode.gif"></p>
+
+
+<h1 id="software"><a class="header" href="#software">Software</a></h1>
+ 
+<p>This project includes a simulator and an emulator written in Java. They load an image of a Turing’s maze, where each pixel represents a tile with these 24-bit RGB values:</p>
+
+<table class="borderless">
+<tr><th class="borderless">Tile</th><th class="borderless">RGB</th></tr>
+<tr><td class="borderless">Black</td><td class="mono">000000</td></tr>
+<tr><td class="borderless">Gray</td><td class="mono">808080</td></tr>
+<tr><td class="borderless">Red</td><td class="mono">FF0000</td></tr>
+<tr><td class="borderless">Green</td><td class="mono">00FF00</td></tr>
+</table>
+
+<p>The simulator runs the mouse from the entrance to the exit, and it saves an image of the final maze state.</p>
+
+<p>The emulator does the same, but it executes much faster. Before it runs the mouse from the entrance to the exit, it positions and orients the mouse on each red and green tile, and in each cardinal direction. It runs a simulation for those configurations that obtains a list of tiles the mouse turns red and a list of the tiles the mouse turns green until the mouse arrives at a red or green tile facing east or west.</p>
+
+<p>At run-time, the emulator uses that precomputed table to jump the mouse from a source red or green tile, while facing east or west, to a destination red or green tile, again facing east or west, while performing the expected tile color changes. If the mouse lands on a red tile, the emulator reverses its direction.</p>
+
+<p>To download the source code and the compiled binary, clone <a href="https://github.com/meatfighter/turings-maze" target="_blank">this repository</a>.</p>
+
+<p>To run the simulator, navigate to the local repository directory, and execute the following command.</p> 
+
+<p><span class="command">java <span class="nowrap">-cp target/turings-maze.jar</span> turingsmaze.Simulator <span class="nowrap">-i [ source image ]</span> <span class="nowrap">-o [ destination image ] <a class="copy" href="#" onclick="event.preventDefault(); navigator.clipboard.writeText('java -cp target/turings-maze.jar turingsmaze.Simulator -i [ source image ] -o [ destination image ]')">&#x2BBA;</a></span></span></p> 
+
+<p>To run the emulator, navigate to the local repository directory, and execute the following command.</p> 
+
+<p><span class="command">java <span class="nowrap">-cp target/turings-maze.jar</span> turingsmaze.Emulator <span class="nowrap">-i [ source image ]</span> <span class="nowrap">-o [ destination image ] <a class="copy" href="#" onclick="event.preventDefault(); navigator.clipboard.writeText('java -cp target/turings-maze.jar turingsmaze.Emulator -i [ source image ] -o [ destination image ]')">&#x2BBA;</a></span></span></p> 
+
+
+<h1 id="mandelbrot-set"><a class="header" href="#mandelbrot-set">Mandelbrot Set</a></h1>
+ 
+<p>After running for three hours on a 5&half;-year-old desktop PC, the emulator performed this transformation: </p>
+
+<p><img class="centered" alt="mandelbrot-transformation" id="mandelbrot-transformation.png" src="mandelbrot-transformation.png" usemap="#mandelbrot-map"></p>
+
+<map name="mandelbrot-map">
+<area shape="rect" coords="0,0,439,542" alt="mandelbrot-before" href="mandelbrot-before.html" target="_blank">
+<area shape="rect" coords="539,0,978,542" alt="mandelbrot-after" href="mandelbrot-after.html" target="_blank">
+</map>
+
+<p>Click on the images to view the full-resolution versions (10,149 &times; 12,540 pixels).
+
+<p>The maze contains circuits that compute the Mandelbrot set and a display that makes it visible:</p>    
+    
 <hr>
 <table class="copyright">
 <tr><td><p class="copyright">&copy; 2023 meatfighter.com<br>This content is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt="CC"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt="BY"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt="SA"></a></p></td><td><p class="home"><a href="https://meatfighter.com">Home</a></p></td></tr>

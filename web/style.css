@@ -91,6 +91,7 @@ a.header:hover {
 a.copy {
     font-family: 'Noto Sans Symbols 2', sans-serif;
     font-size: 18px;
+    font-weight: normal;
 }
 
 table.copyright {
@@ -250,4 +251,24 @@ span.label {
 span.symbols {
     font-family: 'Noto Sans Symbols 2', sans-serif;
     font-size: 15px;
+}
+
+span.adder-subtractor {
+    color: green;
+    font-weight: bold;
+}
+
+span.minuend {
+    color: red;
+    font-weight: bold;
+}
+
+span.subtrahend {
+    color: blue;
+    font-weight: bold;
+}
+
+span.difference {
+    color: purple;
+    font-weight: bold;
 }
