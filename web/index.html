@@ -323,7 +323,7 @@ MathJax = {
 <p><span class="command">java <span class="nowrap">-cp target/turings-maze.jar</span> turingsmaze.Emulator <span class="nowrap">-i [ source image ]</span> <span class="nowrap">-o [ destination image ] <a class="copy" href="#" onclick="event.preventDefault(); navigator.clipboard.writeText('java -cp target/turings-maze.jar turingsmaze.Emulator -i [ source image ] -o [ destination image ]')">&#x2BBA;</a></span></span></p> 
 
 
-<h1 id="mandelbrot-set"><a class="header" href="#mandelbrot-set">Mandelbrot Set</a></h1>
+<h1 id="mandelbrot-set-circuit"><a class="header" href="#mandelbrot-set-circuit">Mandelbrot Set Circuit</a></h1>
  
 <p>After running for three hours on a 5&half;-year-old desktop PC, the emulator completed this transformation: </p>
 
@@ -343,6 +343,10 @@ MathJax = {
 <p>As revealed in the high-level diagram below, the Mandelbrot set calculator consists of an adder-subtractor, a multiplier, a point escape time evaluator, and a main device that iterates over the points of the region. Demultiplexers drive the display. And everything shares a 16-bit bus. </p>
 
 <p><img class="centered" alt="overview" id="overview.png" src="overview.png"></p>
+
+<h2 id="adder-subtractor"><a class="header" href="#adder-subtractor">Adder-subtractor</a></h2>
+
+<p>The adder-subtractor performs addition and subtraction on 16-bit, two's complement numbers. Its conventional ripple carry design consists of cascaded full adder-subtractors that propagate carries or borrows from the least significant bit to the most significant bit. The carry/borrow-in is constant, and the carry/borrow-out is lost. The bus serves as the input and output interface.</p>
 
 <hr>
 <table class="copyright">
