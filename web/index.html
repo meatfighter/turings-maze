@@ -19,6 +19,32 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&family=Source+Code+Pro&family=Open+Sans&display=swap" rel="stylesheet">
 
+<script>
+MathJax = {
+    tex: {
+        inlineMath: [['$', '$']]
+    },
+    svg: {
+        fontCache: 'global',
+        linebreaks: {
+            automatic: true
+        }
+    },
+    CommonHTML: { 
+        linebreaks: {
+            automatic: true
+        }
+    },
+    "HTML-CSS": { 
+        linebreaks: {
+            automatic: true
+        }
+    }, 
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+</script>
+
 <title>Turing's Maze</title>
 
 </head>
@@ -330,7 +356,7 @@
 
 <h2 id="multiplier"><a class="header" href="#multiplier">Multiplier</a></h2>
  
-<p>The multiplier operates on <span class="nowrap">16-bit</span> fixed-point numbers, where the leading six bits represent a signed, two's complement integer, and the remaining ten bits represent a fraction, permitting values in the range <span class="nowrap">[ &minus;32, 31.9990234375 ]</span>. It contains three registers:</p> 
+<p>The multiplier operates on <span class="nowrap">16-bit</span> fixed-point numbers, where the leading six bits represent a signed, two's complement integer, and the remaining ten bits represent a fraction, permitting values in the range $[ &minus;32, 31.9990234375 ]$. It contains three registers:</p> 
 
 <table class="borderless">
 <tr><th class="borderless">Register</th><th class="borderless left">Description</th></tr>
@@ -344,15 +370,15 @@
 <table class="borderless">
 <tr><th class="borderless2">Operation</th><th class="borderless padded">Description</th></tr>
 <tr><td class="mono">PL &larr; PH</td><td class="borderless padded">Move <span class="mono">PH</span> into <span class="mono">PL</span></td></tr>
-<tr><td class="mono">P &larr; P &gt;&gt;&gt; 1</td><td class="borderless padded">Unsigned right-shift <span class="mono">P</span> by <span class="mono">1</span></td></tr>
-<tr><td class="mono">P &larr; P &lt;&lt; 6</td><td class="borderless padded">Left-shift <span class="mono">P</span> by <span class="mono">6</span></td></tr>
+<tr><td class="mono">&gt;&gt;&gt; 1</td><td class="borderless padded">Unsigned right-shift by <span class="mono">1</span></td></tr>
+<tr><td class="mono">&lt;&lt; 6</td><td class="borderless padded">Left-shift by <span class="mono">6</span></td></tr>
 </table>
 
 <p>The multiplier’s registers, devices, and microprogram are labeled in the image below.</p>
 
 <p><img class="centered" alt="multiplier" id="multiplier.png" src="multiplier.png"></p>
 
-<p>The microprogram implements the following algorithm on multiplicands <span class="mono">x</span> and <span class="mono">y</span>.</p>
+<p>The microprogram implements the following algorithm for multiplicands <span class="mono">x</span> and <span class="mono">y</span>.</p>
 
 <pre class="pseudocode2"> 
 <span class="line">A &larr; x</span>
@@ -405,7 +431,11 @@
 
 <p>The escape time evaluator's registers, shifter, and microprogram are labeled in the image below.</p>
 
-<pre class="pseudocode2">
+<p><img class="centered" alt="escape-time-evaluator" id="escape-time-evaluator.png" src="escape-time-evaluator.png"></p>
+
+<p>The microprogram implements the following algorithm for evaluation point $a + bi$.</p>
+
+<pre class="pseudocode2"> 
 <span class="line">X0 &larr; a</span>
 <span class="line">Y0 &larr; b</span>
 <span class="line">X &larr; X0</span>
@@ -427,6 +457,60 @@
 <span class="line">  X &larr; X2 &minus; Y2 + X0</span>
 <span class="line"><span class="keyword2">end</span></span>
 </pre>
+
+<p>The constant <span class="mono">61440</span> corresponds to fixed-point value <span class="nowrap">&minus;4</span>.</p>
+
+<p>At completion, register <span class="mono">I</span> contains the escape time. It maxes out at 64.</p> 
+
+
+<h2 id="main"><a class="header" href="#main">Main</a></h2>
+
+<p>The main microprogram plots a 512&times;512 pixel region of the Mandelbrot set for points</p>
+
+<p>$\{a+bi:a\in[-2.0,0.5],b\in[-1.25, 1.25]\}$</p> 
+
+<p>Since the set is horizontally symmetric within that region, the microprogram computes only the upper half. The display device reflects the computed region to produce the entire image.</p>
+
+<p>The main microprogram employs four registers:</p>
+
+<table class="borderless">
+<tr><th class="borderless">Register</th><th class="borderless left">Description</th></tr>
+<tr><td class="mono centered">J</td><td class="borderless"><span class="nowrap">10-bit</span> column index</td></tr>
+<tr><td class="mono centered">I</td><td class="borderless"><span class="nowrap">9-bit</span> row index</td></tr>
+<tr><td class="mono centered">X</td><td class="borderless">Evaluation point <span class="nowrap">x-coordinate</span></td></tr>
+<tr><td class="mono centered">Y</td><td class="borderless">Evaluation point <span class="nowrap">y-coordinate</span></td></tr>
+</table>
+
+<p>Its components are labeled in the image below.</p>
+
+<p><img class="centered" alt="main" id="main.png" src="main.png"></p>
+
+<p>The main microprogram implements the following algorithm.</p>
+
+<pre class="pseudocode2"> 
+<span class="line">Y &larr; 64256</span> 
+<span class="line">I &larr; 0</span>
+<span class="line">
+<span class="line"><span class="keyword2">while true do</span></span>
+<span class="line">  X &larr; 63488</span>
+<span class="line">  J &larr; 0</span>
+<span class="line">  <span class="keyword2">while true do</span></span>
+<span class="line">    plot(J, I, evalEscapeTime(X, Y))</span>
+<span class="line">    J &larr; J + 1</span>
+<span class="line">    <span class="keyword2">if</span> J<span class="sub3">9</span> = 1 <span class="keyword2">then</span></span>
+<span class="line">      <span class="keyword2">break</span></span>
+<span class="line">    <span class="keyword2">end</span></span>
+<span class="line">    X &larr; X + 5</span>
+<span class="line">  <span class="keyword2">end</span></span>
+<span class="line">  I &larr; I + 1</span>
+<span class="line">  <span class="keyword2">if</span> I<span class="sub3">8</span> = 1 <span class="keyword2">then</span></span>
+<span class="line">    <span class="keyword2">break</span></span>
+<span class="line">  <span class="keyword2">end</span></span>
+<span class="line">  Y &larr; Y + 5</span>
+<span class="line"><span class="keyword2">end</span></span>
+</pre>
+
+<p>Constants <span class="mono">64256</span> and <span class="mono">63488</span> represent fixed-point values <span class="nowrap">&minus;1.25</span> and <span class="nowrap">&minus;2</span>, respectively. The constant <span class="mono">5</span> corresponds to the fixed-point interval between evaluation points: $\dfrac{2.5}{512}=0.0048828125$.</p>
 
 <hr>
 <table class="copyright">

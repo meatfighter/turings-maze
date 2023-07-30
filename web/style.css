@@ -296,3 +296,7 @@ span.sub3 {
   vertical-align: sub;
   font-size: smaller;
 }
+
+span.italic {
+    font-style: italic;
+}

@@ -199,25 +199,25 @@ while true
 
 ---------------------
 
-Y <- 0b1111_1011_0000_0000 
+Y <- 64256 
 I <- 0
 
 while true do
-  X <- 0b1111_1000_0000_0000
+  X <- 63488
   J <- 0
   while true do
-    plot(J, I, mandelbrot(X, Y))
-    J = add(1, J)
+    plot(J, I, evalEscapeTime(X, Y))
+    J <- J + 1
     if J_9 then
       break
     end
-    X <- add(5, X)
+    X <- X + 5
   end
-  I <- add(1, I)
+  I <- I + 1
   if I_8 then
     break
   end
-  Y <- add(5, Y)
+  Y <- Y + 5
 end
 
 
