@@ -1,3 +1,11 @@
+multiplier:
+change image and table
+to reflect that shifters are only applicable to P
+revert them!
+
+
+
+
 demux-256 is not centered!!!!
 
 
