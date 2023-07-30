@@ -120,10 +120,10 @@ p.centered {
 
 img.centered {
     display: block;
+    max-width: 100%;
+    height: auto;    
     margin-left: auto;
     margin-right: auto;
-    max-width: 100%;
-    height: auto;
 }
 
 span.nowrap {
@@ -164,10 +164,29 @@ th.borderless {
     padding-right: 10px;  
 }
 
+th.borderless2 {
+    text-align: center;
+    font-weight: bold;
+    border-bottom: 1pt solid silver;  
+    font-size: 16px;  
+}
+
+th.left {
+    text-align: left;
+}
+
 td.borderless {
     font-size: 16px;
     padding-left: 10px;
     padding-right: 10px;
+}
+
+td.padded {
+    padding-left: 40px;
+}
+
+th.padded {
+    padding-left: 40px;
 }
 
 td.symbol {
@@ -271,4 +290,9 @@ span.subtrahend {
 span.difference {
     color: purple;
     font-weight: bold;
+}
+
+span.sub3 {
+  vertical-align: sub;
+  font-size: smaller;
 }

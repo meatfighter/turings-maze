@@ -4,11 +4,11 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="date" content="2023-07-22">
+<meta name="date" content="2023-07-30">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#FFFFFF">
 
-<link rel="stylesheet" href="style.css?v=2023-07-22" type="text/css">
+<link rel="stylesheet" href="style.css?v=2023-07-30" type="text/css">
 <link rel="manifest" href="manifest.json">
 <link rel="mask-icon" href="mask-icon.svg" color="#000000">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -18,32 +18,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&family=Source+Code+Pro&family=Open+Sans&display=swap" rel="stylesheet">
-
-<script>
-MathJax = {
-    tex: {
-        inlineMath: [['$', '$']]
-    },
-    svg: {
-        fontCache: 'global',
-        linebreaks: {
-            automatic: true
-        }
-    },
-    CommonHTML: { 
-        linebreaks: {
-            automatic: true
-        }
-    },
-    "HTML-CSS": { 
-        linebreaks: {
-            automatic: true
-        }
-    }, 
-};
-</script>
-<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
-</script>
 
 <title>Turing's Maze</title>
 
@@ -229,11 +203,11 @@ MathJax = {
 
 <h1 id="sequential-logic"><a class="header" href="#sequential-logic">Sequential Logic</a></h1>
 
-<p>As shown below, a 1-bit register combines a data storage element, a transmission gate, and a buffer. It provides store and load access through a single data terminal. The store-enable-and-reset terminal turns the transmission gate on, connecting the data terminal to the data storage element, and it resets the data storage element to red. The store-disable terminal turns the transmission gate off, disconnecting the data terminal from the data storage element. The load terminal expresses the data storage element to the data terminal through the buffer.</p>
+<p>As shown below, a <span class="nowrap">1-bit</span> register combines a data storage element, a transmission gate, and a buffer. It provides store and load access through a single data terminal. The store-enable-and-reset terminal turns the transmission gate on, connecting the data terminal to the data storage element, and it resets the data storage element to red. The store-disable terminal turns the transmission gate off, disconnecting the data terminal from the data storage element. The load terminal expresses the data storage element to the data terminal through the buffer.</p>
 
 <p><img class="centered" alt="register" id="register.png" src="register.png"></p>
 
-<p>The Mandelbrot set circuit uses 16-bit registers, where each data terminal connects to the line of a bus shared by other registers and devices:</p>
+<p>The Mandelbrot set circuit uses <span class="nowrap">16-bit</span> registers, where each data terminal connects to the line of a bus shared by other registers and devices:</p>
 
 <p><img class="centered" alt="register-16" id="register-16.png" src="register-16.png"></p>
 
@@ -251,7 +225,7 @@ MathJax = {
 
 <p>The buffers prevent assertions of the shared bus lines from leaking to the load terminal through green data storage elements.</p>
 
-<p>The register load and register store steps described above repeatedly appear in the Mandelbrot set circuit. For example, to subtract two registers, the mouse visits the control lines of the registers and a 16-bit adder-subtractor in a particular sequence:</p>
+<p>The register load and register store steps described above repeatedly appear in the Mandelbrot set circuit. For example, to subtract two registers, the mouse visits the control lines of the registers and a <span class="nowrap">16-bit</span> adder-subtractor in a particular sequence:</p>
 
 <ol>
 <li><span class="adder-subtractor">adder-subtractor</span> &ndash; enable subtraction</li> 
@@ -296,7 +270,7 @@ MathJax = {
 
 <h1 id="software"><a class="header" href="#software">Software</a></h1>
  
-<p>This project includes a simulator and an emulator written in Java. They load an image of a Turing’s maze, where each pixel represents a tile with these 24-bit RGB values:</p>
+<p>This project includes a simulator and an emulator written in Java. They load an image of a Turing’s maze, where each pixel represents a tile with these <span class="nowrap">24-bit</span> RGB values:</p>
 
 <table class="borderless">
 <tr><th class="borderless">Tile</th><th class="borderless">RGB</th></tr>
@@ -340,13 +314,119 @@ MathJax = {
     
 <p><img class="centered" alt="mandelbrot-calculator-and-display" id="mandelbrot-calculator-and-display.png" src="mandelbrot-calculator-and-display.png"></p>
 
-<p>As revealed in the high-level diagram below, the Mandelbrot set calculator consists of an adder-subtractor, a multiplier, a point escape time evaluator, and a main device that iterates over the points of the region. Demultiplexers drive the display. And everything shares a 16-bit bus. </p>
+<p>As revealed in the high-level diagram below, the Mandelbrot set calculator consists of an adder-subtractor, a multiplier, a point escape time evaluator, and a main device that iterates over the points of the region. Demultiplexers drive the display. And everything shares a <span class="nowrap">16-bit</span> bus. </p>
 
 <p><img class="centered" alt="overview" id="overview.png" src="overview.png"></p>
 
+<p>Here are the actual circuits for the components of the Mandelbrot set calculator:</p>
+
+<p><img class="centered" alt="mandelbrot-calculator-circuit" id="mandelbrot-calculator-circuit.png" src="mandelbrot-calculator-circuit.png"></p>
+
+
 <h2 id="adder-subtractor"><a class="header" href="#adder-subtractor">Adder-subtractor</a></h2>
 
-<p>The adder-subtractor performs addition and subtraction on 16-bit, two's complement numbers. Its conventional ripple carry design consists of cascaded full adder-subtractors that propagate carries or borrows from the least significant bit to the most significant bit. The carry/borrow-in is constant, and the carry/borrow-out is lost. The bus serves as the input and output interface.</p>
+<p>The adder-subtractor performs addition and subtraction on <span class="nowrap">16-bit</span>, two's complement numbers. Its conventional ripple carry design consists of cascaded full adder-subtractors that propagate carries or borrows from the least significant bit to the most significant bit. The carry/borrow-in is constant, and the carry/borrow-out is lost. The bus serves as the input and output interface.</p>
+
+
+<h2 id="multiplier"><a class="header" href="#multiplier">Multiplier</a></h2>
+ 
+<p>The multiplier operates on <span class="nowrap">16-bit</span> fixed-point numbers, where the leading six bits represent a signed, two's complement integer, and the remaining ten bits represent a fraction, permitting values in the range <span class="nowrap">[ &minus;32, 31.9990234375 ]</span>. It contains three registers:</p> 
+
+<table class="borderless">
+<tr><th class="borderless">Register</th><th class="borderless left">Description</th></tr>
+<tr><td class="mono centered">I</td><td class="borderless"><span class="nowrap">5-bit</span> loop index</td></tr>
+<tr><td class="mono centered">A</td><td class="borderless"><span class="nowrap">16-bit</span> multiplicand</td></tr>
+<tr><td class="mono centered">P</td><td class="borderless"><span class="nowrap">32-bit</span> product accessible as high and low <span class="nowrap">16-bit</span> registers, <span class="mono">PH</span> and <span class="mono">PL</span>, respectively</td></tr>
+</table>
+
+<p>The multiplier contains three devices that perform the following operations.</p>
+
+<table class="borderless">
+<tr><th class="borderless2">Operation</th><th class="borderless padded">Description</th></tr>
+<tr><td class="mono">PL &larr; PH</td><td class="borderless padded">Move <span class="mono">PH</span> into <span class="mono">PL</span></td></tr>
+<tr><td class="mono">P &larr; P &gt;&gt;&gt; 1</td><td class="borderless padded">Unsigned right-shift <span class="mono">P</span> by <span class="mono">1</span></td></tr>
+<tr><td class="mono">P &larr; P &lt;&lt; 6</td><td class="borderless padded">Left-shift <span class="mono">P</span> by <span class="mono">6</span></td></tr>
+</table>
+
+<p>The multiplier’s registers, devices, and microprogram are labeled in the image below.</p>
+
+<p><img class="centered" alt="multiplier" id="multiplier.png" src="multiplier.png"></p>
+
+<p>The microprogram implements the following algorithm on multiplicands <span class="mono">x</span> and <span class="mono">y</span>.</p>
+
+<pre class="pseudocode2"> 
+<span class="line">A &larr; x</span>
+<span class="line">PH &larr; y</span>
+<span class="line"></span>
+<span class="line"><span class="keyword2">if</span> y<span class="sub3">15</span> <span class="keyword2">then</span></span>
+<span class="line">  PH &larr; 0 &minus; PH</span>
+<span class="line"><span class="keyword2">end</span></span>
+<span class="line">PL &larr; PH</span>
+<span class="line">I &larr; 0</span>
+<span class="line">PH &larr; 0</span>
+<span class="line"></span>
+<span class="line"><span class="keyword2">while true do</span></span>
+<span class="line">  <span class="keyword2">if</span> PL<span class="sub3">0</span> = 1 <span class="keyword2">then</span></span>
+<span class="line">    PH &larr; PH + A</span>
+<span class="line">  <span class="keyword2">end</span></span>
+<span class="line">  P &larr; P &gt;&gt;&gt; 1</span>
+<span class="line">  I &larr; I + 1</span>
+<span class="line">  <span class="keyword2">if</span> I<span class="sub3">4</span> = 1 <span class="keyword2">then</span></span>
+<span class="line">    <span class="keyword2">break</span></span>
+<span class="line">  <span class="keyword2">end</span></span>
+<span class="line"><span class="keyword2">end</span></span>
+<span class="line"></span>
+<span class="line">P &larr; P &lt;&lt; 6</span>
+<span class="line"><span class="keyword2">if</span> y<span class="sub3">15</span> <span class="keyword2">then</span></span>
+<span class="line">  PH &larr; 0 &minus; PH</span>
+<span class="line"><span class="keyword2">end</span></span>
+</pre>
+
+<p>At completion, <span class="mono">PH</span> contains the resultant product.</p>
+
+
+<h2 id="escape-time-evaluator"><a class="header" href="#escape-time-evaluator">Escape Time Evaluator</a></h2>
+ 
+<p>The escape time evaluator executes the Mandelbrot set <a href="https://en.wikipedia.org/wiki/Plotting_algorithms_for_the_Mandelbrot_set#Escape_time_algorithm" target="_blank">escape time algorithm</a> for a given point. It contains eight registers:</p>
+
+<table class="borderless">
+<tr><th class="borderless">Register</th><th class="borderless left">Description</th></tr>
+<tr><td class="mono centered">I</td><td class="borderless"><span class="nowrap">7-bit</span> loop index</td></tr>
+<tr><td class="mono centered">X0</td><td class="borderless">Evaluation point <span class="nowrap">x-coordinate</span></td></tr>
+<tr><td class="mono centered">Y0</td><td class="borderless">Evaluation point <span class="nowrap">x-coordinate</span></td></tr>
+<tr><td class="mono centered">X</td><td class="borderless">Escaping point <span class="nowrap">x-coordinate</span></td></tr>
+<tr><td class="mono centered">Y</td><td class="borderless">Escaping point <span class="nowrap">y-coordinate</span></td></tr>
+<tr><td class="mono centered">X2</td><td class="borderless"><span class="mono">X</span> squared</td></tr>
+<tr><td class="mono centered">Y2</td><td class="borderless"><span class="mono">Y</span> squared</td></tr>
+<tr><td class="mono centered">S</td><td class="borderless">Sum of squares</td></tr>
+</table>
+
+<p>It also contains a device that left-shifts by <span class="mono">1</span>.</p>
+
+<p>The escape time evaluator's registers, shifter, and microprogram are labeled in the image below.</p>
+
+<pre class="pseudocode2">
+<span class="line">X0 &larr; a</span>
+<span class="line">Y0 &larr; b</span>
+<span class="line">X &larr; X0</span>
+<span class="line">Y &larr; Y0</span>
+<span class="line">I &larr; 0</span>
+<span class="line"></span>
+<span class="line"><span class="keyword2">while true do</span></span>
+<span class="line">  Y2 &larr; Y * Y</span>
+<span class="line">  X2 &larr; X * X</span>
+<span class="line">  S &larr; 61440 + X2 + Y2</span>
+<span class="line">  <span class="keyword2">if</span> S<span class="sub3">15</span> = 0 <span class="keyword2">then</span></span>
+<span class="line">    <span class="keyword2">break</span></span>
+<span class="line">  <span class="keyword2">end</span></span>
+<span class="line">  I &larr; I + 1</span>
+<span class="line">  <span class="keyword2">if</span> I<span class="sub3">6</span> = 1 <span class="keyword2">then</span></span>
+<span class="line">    <span class="keyword2">break</span></span>
+<span class="line">  <span class="keyword2">end</span></span>
+<span class="line">  Y &larr; ((X * Y) &lt;&lt; 1) + Y0</span>
+<span class="line">  X &larr; X2 &minus; Y2 + X0</span>
+<span class="line"><span class="keyword2">end</span></span>
+</pre>
 
 <hr>
 <table class="copyright">
