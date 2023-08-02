@@ -4,11 +4,11 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="date" content="2023-07-30">
+<meta name="date" content="2023-08-02">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#FFFFFF">
 
-<link rel="stylesheet" href="style.css?v=2023-07-30" type="text/css">
+<link rel="stylesheet" href="style.css?v=2023-08-02" type="text/css">
 <link rel="manifest" href="manifest.json">
 <link rel="mask-icon" href="mask-icon.svg" color="#000000">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <link rel="shortcut icon" href="favicon.ico" sizes="any" type="image/x-icon">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Symbols+2&family=Source+Code+Pro&family=Open+Sans&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=Noto+Sans+Symbols+2&family=Source+Code+Pro&family=Open+Sans&display=swap" rel="stylesheet">
 
 <script>
 MathJax = {
@@ -81,7 +81,7 @@ MathJax = {
 
 <p><img class="centered" alt="red-east-west" id="red-east-west.gif" src="red-east-west.gif"></p>
 
-<p>If the mouse lands on a red or a green cell while facing south, the cell changes to or remains as red, and the mouse turns north:</p>
+<p>If the mouse lands on a red or green cell while facing south, the cell changes to or remains as red, and the mouse turns north:</p>
 
 <p><img class="centered" alt="south" id="south.gif" src="south.gif"></p>
 
@@ -145,14 +145,14 @@ MathJax = {
 
 <p>The mouse turns a switch off by southwardly stepping onto a green tile. And it turns a switch on by northwardly stepping onto a red tile.</p>
 
-<p>Since a switch retains its state after the mouse steps away, red and green tiles also serve as data storage elements. In the circuits below, red represents a stored logic zero, and green represents a stored logic one.</p>
+<p>Since red and green tiles retain their states after the mouse steps away, they also serve as data storage elements. In the circuits below, red represents a stored logic zero, and green represents a stored logic one.</p>
 
 <p>Note: It is possible to build inverted circuits, where the mouse propagates logic zero, or dual-rail circuits, where the mouse propagates logic zero or logic one depending on which of two paths the mouse takes.</p>
 
 
 <h1 id="logic-gates"><a class="header" href="#logic-gates">Logic Gates</a></h1>
  
-<p>Unlike traditional logic gates, logic gates implemented in Turing’s maze store input Boolean values. The values are all initialized to logic zero.</p> 
+<p>Unlike traditional logic gates, logic gates implemented in Turing’s maze store input values. They are initialized to logic zeros.</p> 
 
 <p>When the mouse visits an input terminal&mdash;where &ldquo;visit&rdquo; means it enters and it subsequently returns from the terminal&mdash;it toggles a stored value to logic one. After setting the inputs in this way, the mouse enters an express-and-reset terminal, which evaluates the logical operation for the stored inputs. If the result is logic one, the mouse visits the output terminal, expressing the result to whatever is wired to the gate. Finally, the mouse resets the stored values to logic zeros, and it returns from the express-and-reset terminal.</p> 
 
@@ -310,17 +310,17 @@ MathJax = {
 
 <p>The emulator does the same, but it executes much faster. Before it runs the mouse from the entrance to the exit, it positions and orients the mouse on each red and green tile, and in each cardinal direction. It runs a simulation for those configurations that obtains a list of tiles the mouse turns red and a list of the tiles the mouse turns green until the mouse arrives at a red or green tile facing east or west.</p>
 
-<p>At run-time, the emulator uses that precomputed table to jump the mouse from a source red or green tile, while facing east or west, to a destination red or green tile, again facing east or west, while performing the expected tile color changes. If the mouse lands on a red tile, the emulator reverses its direction.</p>
+<p>At run-time, the emulator uses that precomputed table to jump the mouse from a source red or green tile, while facing east or west, to a destination red or green tile, again facing east or west, with the expected tile color changes. If the mouse lands on a red tile, the emulator reverses its direction.</p>
 
 <p>To download the source code and the compiled binary, clone <a href="https://github.com/meatfighter/turings-maze" target="_blank">this repository</a>.</p>
 
 <p>To run the simulator, navigate to the local repository directory, and execute the following command.</p> 
 
-<p><span class="command">java <span class="nowrap">-cp target/turings-maze.jar</span> turingsmaze.Simulator <span class="nowrap">-i [ source image ]</span> <span class="nowrap">-o [ destination image ] <a class="copy" href="#" onclick="event.preventDefault(); navigator.clipboard.writeText('java -cp target/turings-maze.jar turingsmaze.Simulator -i [ source image ] -o [ destination image ]')">&#x2BBA;</a></span></span></p> 
+<p><span class="command">java <span class="nowrap">-cp target/turings-maze.jar</span> turingsmaze.Simulator <span class="nowrap">-i [ input image ]</span> <span class="nowrap">-o [ output image ] <a class="copy" href="#" onclick="event.preventDefault(); navigator.clipboard.writeText('java -cp target/turings-maze.jar turingsmaze.Simulator -i [ input image ] -o [ output image ]')">&#x2BBA;</a></span></span></p> 
 
 <p>To run the emulator, navigate to the local repository directory, and execute the following command.</p> 
 
-<p><span class="command">java <span class="nowrap">-cp target/turings-maze.jar</span> turingsmaze.Emulator <span class="nowrap">-i [ source image ]</span> <span class="nowrap">-o [ destination image ] <a class="copy" href="#" onclick="event.preventDefault(); navigator.clipboard.writeText('java -cp target/turings-maze.jar turingsmaze.Emulator -i [ source image ] -o [ destination image ]')">&#x2BBA;</a></span></span></p> 
+<p><span class="command">java <span class="nowrap">-cp target/turings-maze.jar</span> turingsmaze.Emulator <span class="nowrap">-i [ input image ]</span> <span class="nowrap">-o [ output image ] <a class="copy" href="#" onclick="event.preventDefault(); navigator.clipboard.writeText('java -cp target/turings-maze.jar turingsmaze.Emulator -i [ input image ] -o [ output image ]')">&#x2BBA;</a></span></span></p> 
 
 
 <h1 id="mandelbrot-set-circuit"><a class="header" href="#mandelbrot-set-circuit">Mandelbrot Set Circuit</a></h1>
@@ -370,8 +370,8 @@ MathJax = {
 <table class="borderless">
 <tr><th class="borderless2">Operation</th><th class="borderless padded">Description</th></tr>
 <tr><td class="mono">PL &larr; PH</td><td class="borderless padded">Move <span class="mono">PH</span> into <span class="mono">PL</span></td></tr>
-<tr><td class="mono">&gt;&gt;&gt; 1</td><td class="borderless padded">Unsigned right-shift by <span class="mono">1</span></td></tr>
-<tr><td class="mono">&lt;&lt; 6</td><td class="borderless padded">Left-shift by <span class="mono">6</span></td></tr>
+<tr><td class="mono">P &larr; P &gt;&gt;&gt; 1</td><td class="borderless padded">Unsigned right-shift <span class="mono">P</span> by <span class="mono">1</span></td></tr>
+<tr><td class="mono">P &larr; P &lt;&lt; 6</td><td class="borderless padded">Left-shift <span class="mono">P</span> by <span class="mono">6</span></td></tr>
 </table>
 
 <p>The multiplier’s registers, devices, and microprogram are labeled in the image below.</p>
