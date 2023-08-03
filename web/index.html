@@ -544,6 +544,28 @@ MathJax = {
 
 <p>Since the meta tiles include the proximate maze walls, the turmite needs only the current meta tile and its direction when deciding what to do.</p> 
 
+
+<h1 id="universality"><a class="header" href="#universality">Universality</a></h1>
+
+<p>A medium is <a href="https://en.wikipedia.org/wiki/Turing_completeness" target="_blank">Turing-complete</a> if it can compute every Turing-computable function. Put another way, if it can replicate the functionality of <span class="underline">all</span> Turing machines. This section considers if Turing’s maze is such a medium.</p>
+
+<p>When a Turing machine runs, it allocates a finite amount of tape. But it is not possible to anticipate how much tape an arbitrary algorithm requires. As such, a Turing machine needs an unlimited supply. And importantly, the region of tape not containing the algorithm must be blank. This precludes the possibility that the algorithm is just an infinite lookup table that creates the illusion of computation.</p>
+
+<p>Turing’s maze can emulate tape cells and the head with constructs built around the red and green data storage tiles, like the registers described above. But it needs infinite cells, which means a maze of infinite width. In such a hypothetical maze, if the mouse traverses the entrance to the exit, then it still covers a finite distance. How far it voyages into the limitless tape depends on the algorithm.</p>
+
+<p>Consider the reverse: a Turing machine capable of simulating any Turing’s maze. Encoding an infinitely wide maze onto the tape would fill it up. That violates the rule mentioned above: the algorithm must initially fit on a finite region of tape. However, it is possible to build a Turing machine that extends the maze on-demand. If the mouse reaches the maze’s edge, that machine would append more cell constructs. Such a machine would be universal because it can be initialized with a Turing’s maze representing any Turing-computable function.</p> 
+
+<p>But expansion is not an inherent property of Turing’s maze. The mouse cannot dig out new passages. The only way to achieve the effect is to impose it externally. Consequently, Turing’s maze is best described as <a href="https://en.wikipedia.org/wiki/Turing_completeness#Formal_definitions" target="_blank">&ldquo;weakly universal&rdquo;</a> rather than Turing-complete. Meaning, it can compute any algorithm, but some algorithms require a maze specified by repeating yet infinite information.</p> 
+
+<p>Since Turing’s maze is universal, mazes exist for which it is not possible to determine if the mouse can traverse the entrance to the exit. This follows from the <a href="https://en.wikipedia.org/wiki/Halting_problem" target="_blank">halting problem</a>.</p> 
+
+ 
+<h1 id="reversibility"><a class="header" href="#reversibility">Reversibility</a></h1>
+
+<p>A Turing's maze is reversible if the mouse can change the color of a red or green tile at most once. Circuits with that constraint consist of one-time-use logic gates that lack reset paths. They can perform combinational logic, but not sequential logic. The red and green tiles within the gates store applied inputs. That enables the mouse to propagate inputs back to their origins in a reverse simulation.</p>
+
+<p>While reversible Turing’s maze does not permit sequential logic, its effect can be attained by repeating combinational logic. A hypothetical maze containing an infinite chain of combinational logic could perform any algorithm. This implies that reversible Turing’s maze is also &ldquo;weakly universal&rdquo;.</p>
+
 <hr>
 <table class="copyright">
 <tr><td><p class="copyright">&copy; 2023 meatfighter.com<br>This content is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt="CC"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt="BY"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt="SA"></a></p></td><td><p class="home"><a href="https://meatfighter.com">Home</a></p></td></tr>

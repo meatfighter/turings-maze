@@ -130,6 +130,10 @@ span.nowrap {
     white-space: nowrap;
 }
 
+span.underline {
+    text-decoration: underline;
+}
+
 span.mono {
     font-family: 'Source Code Pro', monospace;
 }
