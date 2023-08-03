@@ -4,11 +4,11 @@
 <head>
 
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="date" content="2023-08-02">
+<meta name="date" content="2023-08-03">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#FFFFFF">
 
-<link rel="stylesheet" href="style.css?v=2023-08-02" type="text/css">
+<link rel="stylesheet" href="style.css?v=2023-08-03" type="text/css">
 <link rel="manifest" href="manifest.json">
 <link rel="mask-icon" href="mask-icon.svg" color="#000000">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -334,7 +334,7 @@ MathJax = {
 <area shape="rect" coords="539,0,978,542" alt="mandelbrot-after" href="mandelbrot-after.html" target="_blank">
 </map>
 
-<p>Click on the images to view the full-resolution versions (10,149 &times; 12,540 pixels).
+<p>Click on the images to view the full-resolution versions (<span class="nowrap">10,149 &times; 12,540</span> pixels).
 
 <p>The maze contains circuits that calculate the Mandelbrot set and a display that makes it visible:</p>    
     
@@ -419,7 +419,7 @@ MathJax = {
 <tr><th class="borderless">Register</th><th class="borderless left">Description</th></tr>
 <tr><td class="mono centered">I</td><td class="borderless"><span class="nowrap">7-bit</span> loop index</td></tr>
 <tr><td class="mono centered">X0</td><td class="borderless">Evaluation point <span class="nowrap">x-coordinate</span></td></tr>
-<tr><td class="mono centered">Y0</td><td class="borderless">Evaluation point <span class="nowrap">x-coordinate</span></td></tr>
+<tr><td class="mono centered">Y0</td><td class="borderless">Evaluation point <span class="nowrap">y-coordinate</span></td></tr>
 <tr><td class="mono centered">X</td><td class="borderless">Escaping point <span class="nowrap">x-coordinate</span></td></tr>
 <tr><td class="mono centered">Y</td><td class="borderless">Escaping point <span class="nowrap">y-coordinate</span></td></tr>
 <tr><td class="mono centered">X2</td><td class="borderless"><span class="mono">X</span> squared</td></tr>
@@ -465,7 +465,7 @@ MathJax = {
 
 <h2 id="main"><a class="header" href="#main">Main</a></h2>
 
-<p>The main microprogram plots a 512&times;512 pixel region of the Mandelbrot set for points</p>
+<p>The main microprogram plots a <span class="nowrap">512&times;512</span> pixel region of the Mandelbrot set for points</p>
 
 <p>$\{a+bi:a\in[-2.0,0.5],b\in[-1.25, 1.25]\}$</p> 
 
@@ -511,6 +511,15 @@ MathJax = {
 </pre>
 
 <p>Constants <span class="mono">64256</span> and <span class="mono">63488</span> represent fixed-point values <span class="nowrap">&minus;1.25</span> and <span class="nowrap">&minus;2</span>, respectively. The constant <span class="mono">5</span> corresponds to the fixed-point interval between evaluation points: $\dfrac{2.5}{512}=0.0048828125$.</p>
+
+
+<h2 id="display"><a class="header" href="#display">Display</a></h2>
+
+<p>The display comprises a <span class="nowrap">512&times;512</span> matrix of cells that act as monochrome pixels capable of showing red or green. The image below depicts a <span class="nowrap">4&times;4</span> submatrix.</p>
+
+<p><img class="centered" alt="display-4x4" id="display-4x4.png" src="display-4x4.png"></p>
+
+<p>Each cell primarily consists of red tiles wired together to form a large indicator. The AND gate in the lower-left corner of each cell drives the indicator. Each AND gate’s inputs are connected to row and column lines. And the express-and-reset terminals of all the AND gates are joined.</p>
 
 <hr>
 <table class="copyright">
