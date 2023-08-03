@@ -521,6 +521,29 @@ MathJax = {
 
 <p>Each cell primarily consists of red tiles wired together to form a large indicator. The AND gate in the lower-left corner of each cell drives the indicator. Each AND gate’s inputs are connected to row and column lines. And the express-and-reset terminals of all the AND gates are joined.</p>
 
+<p>To turn a cell green, the mouse visits a row line, a column line, and the collective express-and-reset lines. Only the AND gate at the intersection of the row and column lines permits the mouse to reach an indicator.</p>    
+
+<p>Demultiplexers drive the row and column lines:</p> 
+
+<p><img class="centered" alt="display-demuxes" id="display-demuxes.png" src="display-demuxes.png"></p> 
+
+<p>As mentioned, the circuit takes advantage of the Mandelbrot set’s horizontal symmetry. The row demultiplexer reflects the computed upper half into the lower half.</p> 
+
+
+<h1 id="other-representations"><a class="header" href="#other-representations">Other Representations</a></h1>
+
+<p>Turing’s maze can be modeled as a <a href="https://en.wikipedia.org/wiki/Cellular_automaton" target="_blank">cellular automaton</a> with sixteen cell states:</p>
+
+[ pic of 16 tiles ] 
+
+<p>The rules that produce a new generation&mdash;which apply to the entire grid simultaneously&mdash;change only those few cells with the mouse in their neighborhood.</p>
+
+<p>It is also possible to model Turing’s maze as a <a href="https://en.wikipedia.org/wiki/Turmite" target="_blank">turmite</a> with forty-eight meta tiles:</p> 
+
+[ pic of 48 tiles ] 
+
+<p>Since the meta tiles include the proximate maze walls, the turmite needs only the current meta tile and its direction when deciding what to do.</p> 
+
 <hr>
 <table class="copyright">
 <tr><td><p class="copyright">&copy; 2023 meatfighter.com<br>This content is licensed under <a href="http://creativecommons.org/licenses/by-sa/4.0/?ref=chooser-v1" target="_blank" rel="license noopener noreferrer" style="display:inline-block;">CC BY-SA 4.0<img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/cc.svg?ref=chooser-v1" alt="CC"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/by.svg?ref=chooser-v1" alt="BY"><img style="height:22px!important;margin-left:3px;vertical-align:text-bottom;" src="https://mirrors.creativecommons.org/presskit/icons/sa.svg?ref=chooser-v1" alt="SA"></a></p></td><td><p class="home"><a href="https://meatfighter.com">Home</a></p></td></tr>

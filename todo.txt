@@ -1,14 +1,3 @@
-multiplier:
-change image and table
-to reflect that shifters are only applicable to P
-revert them!
-
-
-
-
-demux-256 is not centered!!!!
-
-
 adder-subtractor
 
 1. configuration (0=add, 1=subtract)
