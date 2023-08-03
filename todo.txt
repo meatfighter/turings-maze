@@ -1,3 +1,6 @@
+mention that the main microprogram sets the pixels of the display with the least significant bit of the escape time.
+
+
 adder-subtractor
 
 1. configuration (0=add, 1=subtract)
