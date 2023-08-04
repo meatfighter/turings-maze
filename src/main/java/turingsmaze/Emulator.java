@@ -7,30 +7,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Emulator {
-    
-    private static final String WORKSPACE_DIR = "workspace/";
-    private static final String TESTS_DIR = WORKSPACE_DIR + "tests/";
-    
-    private static final String SOURCE_FILE = TESTS_DIR + "test-main.png";
-    private static final String DESTINATION_FILE = TESTS_DIR + "out.png";    
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
-    private void launch() throws Exception {
-        System.out.println("--1");
-        final Maze maze = new Maze(SOURCE_FILE);
-        System.out.println("--2");
+public class Emulator {
+
+    private void launch(final String inputFilename, final String outputFilename) throws Exception {
+        
+        final Maze maze = new Maze(inputFilename);
         final Switch[] switches = findSwitches(maze);        
-        System.out.println("--3");
         final Response[][] responses = createResponseTable(maze, switches);
-        System.out.println("--4");
- 
         
         int direction = Direction.NORTH;
-        Switch s = switches[0];
-        
-//        int count = 0; // TODO REMOVE
-        
-        final long startTime = System.currentTimeMillis();
+        Switch s = switches[0];        
         while (true) {
             final Response response = responses[direction][s.index];          
             final Switch[] reds = response.reds;
@@ -49,20 +37,14 @@ public class Emulator {
             if (s.red) {
                 direction = (direction + 2) & 3;
             }
-            
-//            if (++count == 60_000_000) { // TODO REMOVE
-//                break; 
-//            }
         }
-        final long endTime = System.currentTimeMillis();
-        System.out.println(endTime - startTime);
 
         for (int i = switches.length - 1; i > 1; --i) {
             s = switches[i];
             maze.setTile(s.coordinates.x, s.coordinates.y, s.red ? Tile.RED : Tile.GREEN);
         }
         
-        maze.write(DESTINATION_FILE);
+        maze.write(outputFilename);
     }
     
     private Response[][] createResponseTable(final Maze maze, final Switch[] switches) {
@@ -70,7 +52,6 @@ public class Emulator {
         final Map<Coordinates, Switch> switchesMap = createSwitchesMap(switches);
         final Response[][] responses = new Response[4][switches.length];
         for (int direction = 3; direction >= 0; --direction) {
-            System.out.println("direction: " + direction); // TODO REMOVE
             final Thread[] threads = new Thread[Runtime.getRuntime().availableProcessors()];
             final int length = switches.length / threads.length;
             for (int i = threads.length - 1, index = switches.length - 1; i >= 0; --i, index -= length) {
@@ -178,6 +159,44 @@ public class Emulator {
     }
     
     public static void main(final String... args) throws Exception {
-        new Emulator().launch();
+        
+        if (args.length == 0) {
+            System.out.println("args: -i [ input image ] -o [ output image ]");
+            return;
+        }
+        
+        String inputFilename = null;
+        String outputFilename = null;
+        
+        int i = 0;
+        while (i < args.length) {
+            final String flag = args[i++];
+            if (i == args.length) {
+                System.err.format("Flag missing argument: %s%n", flag);
+                return;
+            }
+            switch (flag) {
+                case "-i":
+                    inputFilename = args[i++];
+                    break;
+                case "-o":
+                    outputFilename = args[i++];
+                    break;
+                default:
+                    System.err.format("Unknown flag: %s%n", flag);
+                    return;
+            }
+        }
+        
+        if (isBlank(inputFilename)) {
+            System.err.println("Input image not specified.");
+            return;
+        }
+        if (isBlank(outputFilename)) {
+            System.err.println("Output image not specified.");
+            return;
+        }
+        
+        new Emulator().launch(inputFilename, outputFilename);
     }
 }
