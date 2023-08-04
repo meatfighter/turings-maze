@@ -1,1 +1,1 @@
-# turings-maze
+Project page: https://meatfighter.com/turings-maze
