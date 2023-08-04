@@ -2,5 +2,5 @@ target/*
 !/target/turings-maze.jar
 hs_err_pid*
 
-#nbactions-*.xml
-#nb-*.xml
+nbactions-*.xml
+nb-*.xml
