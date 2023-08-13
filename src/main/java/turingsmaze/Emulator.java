@@ -53,9 +53,9 @@ public class Emulator {
         final Response[][] responses = new Response[4][switches.length];
         
         responses[Direction.NORTH][0] = createResponse(maze, switchesMap, Direction.NORTH, switches[0]);
-        responses[Direction.SOUTH][0] = createResponse(maze, switchesMap, Direction.SOUTH, switches[0]);
-        
         responses[Direction.NORTH][1] = createResponse(maze, switchesMap, Direction.NORTH, switches[1]);
+        
+        responses[Direction.SOUTH][0] = createResponse(maze, switchesMap, Direction.SOUTH, switches[0]);
         responses[Direction.SOUTH][1] = createResponse(maze, switchesMap, Direction.SOUTH, switches[1]);
         
         for (int direction = Direction.WEST; direction >= Direction.EAST; direction -= 2) {
