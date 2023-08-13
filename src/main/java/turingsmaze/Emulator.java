@@ -83,6 +83,16 @@ public class Emulator {
     private Response createResponse(final Maze maze, final Map<Coordinates, Switch> switchesMap, final int direction, 
             final Switch s) {
         
+        if (s.index >= 2) {
+            if (direction == Direction.NORTH || direction == Direction.SOUTH) {
+                return null;
+            }
+            if (maze.getTile(s.coordinates.x - 1, s.coordinates.y) == Tile.GRAY
+                    && maze.getTile(s.coordinates.x + 1, s.coordinates.y) == Tile.GRAY) {
+                return null;
+            }
+        }
+        
         final Mouse mouse = new Mouse(s.coordinates.x, s.coordinates.y, direction);
         final List<Switch> reds = new ArrayList<>();
         final List<Switch> greens = new ArrayList<>();
