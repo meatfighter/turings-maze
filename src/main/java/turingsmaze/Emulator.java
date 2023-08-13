@@ -51,7 +51,14 @@ public class Emulator {
         
         final Map<Coordinates, Switch> switchesMap = createSwitchesMap(switches);
         final Response[][] responses = new Response[4][switches.length];
-        for (int direction = 3; direction >= 0; --direction) {
+        
+        responses[Direction.NORTH][0] = createResponse(maze, switchesMap, Direction.NORTH, switches[0]);
+        responses[Direction.SOUTH][0] = createResponse(maze, switchesMap, Direction.SOUTH, switches[0]);
+        
+        responses[Direction.NORTH][1] = createResponse(maze, switchesMap, Direction.NORTH, switches[1]);
+        responses[Direction.SOUTH][1] = createResponse(maze, switchesMap, Direction.SOUTH, switches[1]);
+        
+        for (int direction = Direction.WEST; direction >= Direction.EAST; direction -= 2) {
             final Thread[] threads = new Thread[Runtime.getRuntime().availableProcessors()];
             final int length = switches.length / threads.length;
             for (int i = threads.length - 1, index = switches.length - 1; i >= 0; --i, index -= length) {
@@ -83,14 +90,9 @@ public class Emulator {
     private Response createResponse(final Maze maze, final Map<Coordinates, Switch> switchesMap, final int direction, 
             final Switch s) {
         
-        if (s.index >= 2) {
-            if (direction == Direction.NORTH || direction == Direction.SOUTH) {
-                return null;
-            }
-            if (maze.getTile(s.coordinates.x - 1, s.coordinates.y) == Tile.GRAY
-                    && maze.getTile(s.coordinates.x + 1, s.coordinates.y) == Tile.GRAY) {
-                return null;
-            }
+        if (s.index >= 2 && maze.getTile(s.coordinates.x - 1, s.coordinates.y) == Tile.GRAY 
+                && maze.getTile(s.coordinates.x + 1, s.coordinates.y) == Tile.GRAY) {
+            return null;
         }
         
         final Mouse mouse = new Mouse(s.coordinates.x, s.coordinates.y, direction);
